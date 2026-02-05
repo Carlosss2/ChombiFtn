@@ -53,6 +53,7 @@ fun BusScreen() {
         ) {
             Header()
 
+
             // Tu fila de título y botón
             Row(
                 modifier = Modifier.fillMaxWidth(),
