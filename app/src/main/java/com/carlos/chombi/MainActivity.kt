@@ -11,15 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.carlos.chombi.core.di.AppContainer
 import com.carlos.chombi.core.ui.theme.AppTheme
+import com.carlos.chombi.feauteres.authentication.di.RegisterModule
+import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterScreen
 
 class MainActivity : ComponentActivity() {
+    lateinit var appContainer: AppContainer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appContainer = AppContainer(this)
+        val authMoodule = RegisterModule(appContainer)
+
         enableEdgeToEdge()
         setContent {
             AppTheme {
-
+                RegisterScreen(authMoodule.privateGetProvideRegisterUserViewModelFactory())
             }
         }
     }
@@ -27,7 +34,3 @@ class MainActivity : ComponentActivity() {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-}

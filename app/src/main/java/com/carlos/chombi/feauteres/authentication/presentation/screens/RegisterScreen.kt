@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,11 +30,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
-
+import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModel
+import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModelFactory
 @Composable
-fun RegisterScreen(){
+fun RegisterScreen(
+    factory: RegisterViewModelFactory
+) {
+    val viewModel: RegisterViewModel = viewModel(factory = factory)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +67,7 @@ fun RegisterScreen(){
             contentDescription = "bus_icon",
             modifier = Modifier
                 .size(80.dp)
-                .offset(x = 260.dp, y = 15.dp) // Lo mueve 50dp a la derecha y 20dp hacia abajo
+                .offset(x = 260.dp, y = 15.dp)
         )
 
         Column(
@@ -91,128 +100,99 @@ fun RegisterScreen(){
                 fontWeight = FontWeight.Bold,
                 color = primaryLight
             )
-            Spacer(modifier = Modifier.height(34.dp))
 
-            // Campo de nombres
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Nombre") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.user),
-                        contentDescription = "Name",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .offset(x = 2.dp, y = 1.dp)
-
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.LightGray,
-                    focusedBorderColor = primaryLight
-                )
-            )
-
-            Spacer(modifier = Modifier.height(34.dp))
-
-            // Campo
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Apellido") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.user),
-                        contentDescription = "FirstName",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .offset(x = 2.dp, y = 1.dp)
-
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.LightGray,
-                    focusedBorderColor = primaryLight
-                )
-            )
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Campo de correo electrónico
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Correo electronico") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.gmain_icon),
-                        contentDescription = "Email"
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.LightGray,
-                    focusedBorderColor = primaryLight
-                )
-            )
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Campo de contraseña
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Contraseña") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.lock),
-                        contentDescription = "Password",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .offset(x = 2.dp, y = 1.dp)
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.LightGray,
-                    focusedBorderColor = primaryLight
-                )
-            )
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Botón
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = primaryLight
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Registrar",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            // Mostrar error si existe
+            uiState.error?.let {
+                Text(text = it, color = Color.Red, fontSize = 12.sp)
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Campo de nombres
+            CustomTextField(
+                value = uiState.name,
+                onValueChange = { viewModel.onNameChange(it) },
+                placeholder = "Nombre",
+                iconRes = R.drawable.user
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo de apellido
+            CustomTextField(
+                value = uiState.lastName,
+                onValueChange = { viewModel.onLastNameChange(it) },
+                placeholder = "Apellido",
+                iconRes = R.drawable.user
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo de correo
+            CustomTextField(
+                value = uiState.email,
+                onValueChange = { viewModel.onEmailChange(it) },
+                placeholder = "Correo electronico",
+                iconRes = R.drawable.gmain_icon
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo de contraseña
+            CustomTextField(
+                value = uiState.password,
+                onValueChange = { viewModel.onPasswordChange(it) },
+                placeholder = "Contraseña",
+                iconRes = R.drawable.lock,
+                isPassword = true
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // Botón con estado de carga
+            Button(
+                onClick = { viewModel.onRegister() },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                enabled = !uiState.isLoading,
+                colors = ButtonDefaults.buttonColors(containerColor = primaryLight),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                if (uiState.isLoading) {
+                    Text("Procesando...")
+                } else {
+                    Text("Registrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+            }
         }
-        }
+    }
 }
 
-@Preview(showBackground = true)
+// Componente reutilizable para no repetir código de diseño
 @Composable
-fun PreviewRegister(){
-    RegisterScreen()
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    iconRes: Int,
+    isPassword: Boolean = false
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(placeholder) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = Color.LightGray,
+            focusedBorderColor = primaryLight
+        )
+    )
 }
