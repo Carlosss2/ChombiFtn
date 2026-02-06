@@ -2,6 +2,7 @@ package com.carlos.chombi.feauteres.authentication.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +44,7 @@ import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginV
 
 @Composable
 fun LoginScreen(
-    factory: LoginViewModelFactory
+    factory: LoginViewModelFactory,onRegisterClick: () -> Unit, onBusClick: ()-> Unit
 ) {
     val viewModel: LoginViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -183,7 +185,8 @@ fun LoginScreen(
                         }
                     },
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    modifier = Modifier.clickable { onRegisterClick() }
                 )
             }
 
@@ -192,7 +195,10 @@ fun LoginScreen(
             LoginResultDialog(
                 isSuccess = true,
                 message = "Bienvenido a Chombi",
-                onDismiss = { viewModel.clearResult() }
+                onDismiss = {
+                    viewModel.clearResult()
+                    onBusClick()
+                }
             )
         }
 
