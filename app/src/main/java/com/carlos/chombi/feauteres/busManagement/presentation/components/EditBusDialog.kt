@@ -1,24 +1,29 @@
 package com.carlos.chombi.feauteres.busManagement.presentation.components
 
-
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 
 @Composable
-fun EditBusDialog(onDismiss: () -> Unit) {
+fun EditBusDialog(
+    bus: Bus,
+    onDismiss: () -> Unit,
+    onSave: (Bus) -> Unit
+) {
+    var chofer by remember { mutableStateOf(bus.driver) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Editar unidad") },
         text = {
             OutlinedTextField(
-                value = "Carlos Gael",
-                onValueChange = {},
+                value = chofer,
+                onValueChange = { chofer = it },
                 label = { Text("Chofer") }
             )
         },
         confirmButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = { onSave(bus.copy(driver = chofer)) }) {
                 Text("Actualizar")
             }
         },

@@ -1,7 +1,5 @@
 package com.carlos.chombi.feauteres.busManagement.presentation.components
 
-
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -12,7 +10,6 @@ fun DeleteBusDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Eliminar unidad") },

@@ -9,6 +9,7 @@ import com.carlos.chombi.core.ui.theme.AppTheme
 import com.carlos.chombi.feauteres.authentication.di.AuthModule
 import com.carlos.chombi.feauteres.authentication.presentation.screens.LoginScreen
 import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterScreen
+import com.carlos.chombi.feauteres.busManagement.di.BusModule
 import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusScreen
 
 class MainActivity : ComponentActivity() {
@@ -17,12 +18,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         appContainer = AppContainer(this)
         val authMoodule = AuthModule(appContainer)
-
+        val busModule = BusModule(appContainer)
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                LoginScreen(authMoodule.provideLoginViewModelFactory())
+               // LoginScreen(authMoodule.provideLoginViewModelFactory())
                // RegisterScreen(authMoodule.GetProvideRegisterUserViewModelFactory())
+                BusScreen(busModule.provideBusViewModelFactory())
                 //BusScreen()
             }
         }

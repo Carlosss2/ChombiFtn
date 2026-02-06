@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,18 +17,15 @@ import com.carlos.chombi.R
 import com.carlos.chombi.core.shared.components.Header
 import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.primaryLight
-import com.carlos.chombi.feauteres.busManagement.presentation.components.CardBus
-import com.carlos.chombi.feauteres.busManagement.presentation.components.AddBusDialog
-import com.carlos.chombi.feauteres.busManagement.presentation.components.DeleteBusDialog
-import com.carlos.chombi.feauteres.busManagement.presentation.components.EditBusDialog
-
+import com.carlos.chombi.feauteres.busManagement.presentation.components.*
 import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModel
+import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModelFactory
 
 @Composable
 fun BusScreen(
-    viewModel: BusViewModel = viewModel()
+    factory: BusViewModelFactory
 ) {
-
+    val viewModel: BusViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -75,31 +71,45 @@ fun BusScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CardBus(
-                onEditClick = viewModel::openEditDialog,
-                onDeleteClick = viewModel::openDeleteDialog
-            )
+            uiState.buses.forEach { bus ->
+                CardBus(
+                    unidad = bus.unitNumber.toString(),
+                    chofer = bus.driver,
+                    placa = bus.licencePlate,
+                    onEditClick = {
+                        viewModel.selectBus(bus)
+                        viewModel.openEditDialog()
+                    },
+                    onDeleteClick = {
+                        viewModel.selectBus(bus)
+                        viewModel.openDeleteDialog()
+                    }
+                )
+            }
         }
     }
 
+    /* ---------------- DIALOGS ---------------- */
+
     if (uiState.showAddDialog) {
-        AddBusDialog(onDismiss = viewModel::closeDialogs)
+        AddBusDialog(
+            onDismiss = viewModel::closeDialogs,
+            onSave = viewModel::addBus
+        )
     }
 
-    if (uiState.showEditDialog) {
-        EditBusDialog(onDismiss = viewModel::closeDialogs)
+    if (uiState.showEditDialog && uiState.selectedBus != null) {
+        EditBusDialog(
+            bus = uiState.selectedBus!!,
+            onDismiss = viewModel::closeDialogs,
+            onSave = viewModel::updateSelectedBus
+        )
     }
 
-    if (uiState.showDeleteDialog) {
+    if (uiState.showDeleteDialog && uiState.selectedBus != null) {
         DeleteBusDialog(
-            onConfirm = viewModel::closeDialogs,
+            onConfirm = viewModel::deleteSelectedBus,
             onDismiss = viewModel::closeDialogs
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewBusScreen(){
-    BusScreen()
 }

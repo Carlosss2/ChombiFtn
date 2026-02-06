@@ -11,19 +11,17 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.carlos.chombi.core.ui.theme.errorLight
 import com.carlos.chombi.core.ui.theme.primaryLight
 
 @Composable
 fun CardBus(
-    unidad: String = "#27",
-    chofer: String = "Carlos Gael",
-    placa: String = "B13 CX1 318",
+    unidad: String,
+    chofer: String,
+    placa: String,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,7 +29,6 @@ fun CardBus(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFEEEEEE))
     ) {
-
         Column(modifier = Modifier.padding(20.dp)) {
 
             Row(
@@ -59,10 +56,7 @@ fun CardBus(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = "Chofer: $chofer",
-                fontWeight = FontWeight.Bold
-            )
+            Text(text = "Chofer: $chofer", fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -71,10 +65,7 @@ fun CardBus(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text(
-                    text = "Placa: $placa",
-                    fontWeight = FontWeight.Bold
-                )
+                Text(text = "Placa: $placa", fontWeight = FontWeight.Bold)
 
                 IconButton(
                     onClick = onDeleteClick,
