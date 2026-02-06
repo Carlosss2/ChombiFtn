@@ -7,18 +7,26 @@ import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginV
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModelFactory
 
 class AuthModule(
-    private val appContainer : AppContainer
-){
-    private fun getProvideRegisterUserUseCase(): RegisterUserUseCase{
-        return RegisterUserUseCase(appContainer.AuthRepository)
+    private val appContainer: AppContainer
+) {
+
+    private fun provideRegisterUserUseCase(): RegisterUserUseCase {
+        return RegisterUserUseCase(appContainer.authRepository)
     }
+
     private fun provideLoginUserUseCase(): AuthUserUseCase {
-        return AuthUserUseCase(appContainer.AuthRepository)
+        return AuthUserUseCase(appContainer.authRepository)
     }
-    fun  GetProvideRegisterUserViewModelFactory(): RegisterViewModelFactory{
-        return RegisterViewModelFactory(registerUserUseCase = getProvideRegisterUserUseCase())
+
+    fun provideRegisterViewModelFactory(): RegisterViewModelFactory {
+        return RegisterViewModelFactory(
+            registerUserUseCase = provideRegisterUserUseCase()
+        )
     }
+
     fun provideLoginViewModelFactory(): LoginViewModelFactory {
-        return LoginViewModelFactory(loginUserUseCase = provideLoginUserUseCase())
+        return LoginViewModelFactory(
+            loginUserUseCase = provideLoginUserUseCase()
+        )
     }
 }
