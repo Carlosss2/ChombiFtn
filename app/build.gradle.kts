@@ -44,7 +44,7 @@ android {
     productFlavors {
         create("dev") {
             dimension = "environment"
-            buildConfigField("String", "BASE_URL", "\"http://98.87.177.212:8080/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://chombiapi.duckdns.org/api/v1/\"")
             resValue("string", "app_name", "REST Chombi")
         }
     }
@@ -58,6 +58,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.datastore.preferences) //datastore
     implementation(libs.androidx.ui)                // IO
     implementation(libs.com.squareup.retrofit2.retrofit)        // Retrofit
     implementation(libs.com.squareup.retrofit2.converter.json)  // JSON
