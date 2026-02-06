@@ -5,6 +5,8 @@ import com.carlos.chombi.BuildConfig
 import com.carlos.chombi.core.network.ChombiApi
 import com.carlos.chombi.feauteres.authentication.data.repositories.AuthRepositoryImpl
 import com.carlos.chombi.feauteres.authentication.domain.repositories.AuthRepository
+import com.carlos.chombi.feauteres.busManagement.data.repositories.BusRepositoryImpl
+import com.carlos.chombi.feauteres.busManagement.domain.repositories.BusRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,6 +24,9 @@ class AppContainer(context: Context) {
         AuthRepositoryImpl(chombiApi)
     }
 
+    val busRepository: BusRepository by lazy {
+        BusRepositoryImpl(chombiApi)
+    }
 
 
 }
