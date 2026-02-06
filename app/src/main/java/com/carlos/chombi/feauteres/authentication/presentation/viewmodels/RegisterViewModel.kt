@@ -67,4 +67,12 @@ class RegisterViewModel(
             }
         }
     }
+    fun clearResult() {
+        _uiState.update {
+            it.copy(
+                isSuccess = false,
+                error = null
+            )
+        }
+    }
 }

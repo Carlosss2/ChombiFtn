@@ -14,5 +14,5 @@ interface ChombiApi {
     @POST("register")
     suspend fun registerUser(
         @Body userData: UserRegisterDto // ENVIAMOS datos completos
-    ): AuthResponse // RECIBIMOS usuario + token
+    ): retrofit2.Response<AuthResponse>
 }

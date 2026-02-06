@@ -8,6 +8,8 @@ import com.carlos.chombi.core.di.AppContainer
 import com.carlos.chombi.core.ui.theme.AppTheme
 import com.carlos.chombi.feauteres.authentication.di.AuthModule
 import com.carlos.chombi.feauteres.authentication.presentation.screens.LoginScreen
+import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterScreen
+import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusScreen
 
 class MainActivity : ComponentActivity() {
     lateinit var appContainer: AppContainer
@@ -20,6 +22,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 LoginScreen(authMoodule.provideLoginViewModelFactory())
+               // RegisterScreen(authMoodule.GetProvideRegisterUserViewModelFactory())
+                //BusScreen()
             }
         }
     }
