@@ -31,16 +31,20 @@ fun AddBusDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    onSave(
-                        Bus(
-                            id = 0,
-                            licencePlate = placa,
-                            driver = chofer,
-                            unitNumber = unidad.toIntOrNull() ?: 0,
-                            shift = "",
-                            isWorking = true
+                    val unitNumber = unidad.toIntOrNull()
+
+                    if (unitNumber != null && unitNumber > 0 && chofer.isNotBlank() && placa.isNotBlank()) {
+                        onSave(
+                            Bus(
+                                id = 0,
+                                licencePlate = placa,
+                                driver = chofer,
+                                unitNumber = unitNumber,
+                                shift = "",
+                                isWorking = true
+                            )
                         )
-                    )
+                    }
                 }
             ) {
                 Text("Guardar")

@@ -39,7 +39,7 @@ import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.Regist
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModelFactory
 @Composable
 fun RegisterScreen(
-    factory: RegisterViewModelFactory
+    factory: RegisterViewModelFactory,onLoginClick: () -> Unit
 ) {
     val viewModel: RegisterViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -79,7 +79,7 @@ fun RegisterScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { /* Navegar a login */ }
+                modifier = Modifier.clickable { onLoginClick() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.angle_circle_left),
