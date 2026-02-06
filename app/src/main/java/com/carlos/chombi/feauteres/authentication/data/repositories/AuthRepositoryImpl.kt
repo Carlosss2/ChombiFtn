@@ -12,27 +12,36 @@ class AuthRepositoryImpl(
 ) : AuthRepository {
 
     override suspend fun registerUser(user: User): User {
+        // Convertimos el objeto de dominio a DTO para enviarlo
         val userDtoToSend = user.toRegisterDto()
+
+        // Llamada a la API
         val response = api.registerUser(userDtoToSend)
 
-        // 3.Aquí deberías guardar el response.token en SharedPreferences/DataStore
+        // TODO: Guardar token si es necesario
         // saveToken(response.token)
 
-        //
+        /**
+         * response.data.toDomain() devuelve "User?".
+         * El operador ?: lanza una excepción si el resultado es null,
+         * cumpliendo con el tipo de retorno "User" (no nulo).
+         */
         return response.data.toDomain()
+            ?: throw Exception("La respuesta del servidor está vacía")
     }
 
     override suspend fun authUser(email: String, password: String): User {
-        //
+        // Preparamos el DTO de login
         val loginDto = LoginRequestDto(email, password)
 
-        //
+        // Llamada a la API
         val response = api.loginUser(loginDto)
 
-        // Guardar token
+        // TODO: Guardar token
         // saveToken(response.token)
 
-        // Devolvemos el usuario convertido a dominio
+
         return response.data.toDomain()
+            ?: throw Exception("Credenciales inválidas o error de datos")
     }
 }

@@ -4,7 +4,7 @@ import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.
 import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.UserRegisterDto
 import com.carlos.chombi.feauteres.authentication.domain.entities.User
 
-
+// Mapper de Dominio a DTO (Para enviar datos al server)
 fun User.toRegisterDto(): UserRegisterDto {
     return UserRegisterDto(
         name = this.name,
@@ -14,12 +14,18 @@ fun User.toRegisterDto(): UserRegisterDto {
     )
 }
 
+/**
+ * Mapper de DTO a Dominio (Para recibir datos del server)
+ * Se agrega el "?" en UserDto para que acepte nulos y no truene la app.
+ */
+fun UserDto?.toDomain(): User? {
+    // Si el objeto es nulo, regresamos nulo de forma segura
+    if (this == null) return null
 
-fun UserDto.toDomain(): User {
     return User(
-        name = this.name,
-        lastName = this.lastName,
-        email = this.email,
+        name = this.name ?: "",      // Si el campo individual llega nulo, ponemos texto vacío
+        lastName = this.lastName ?: "",
+        email = this.email ?: "",
         password = "" // El backend no devuelve la contraseña por seguridad
     )
 }
