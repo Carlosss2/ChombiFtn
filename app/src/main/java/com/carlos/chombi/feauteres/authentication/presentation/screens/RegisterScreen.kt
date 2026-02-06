@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
+import com.carlos.chombi.feauteres.authentication.presentation.components.RegisterResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModel
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModelFactory
 @Composable
@@ -101,10 +102,7 @@ fun RegisterScreen(
                 color = primaryLight
             )
 
-            // Mostrar error si existe
-            uiState.error?.let {
-                Text(text = it, color = Color.Red, fontSize = 12.sp)
-            }
+
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -163,6 +161,23 @@ fun RegisterScreen(
                     Text("Registrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
+        }
+        //dialog
+        if (uiState.isSuccess) {
+            RegisterResultDialog(
+                isSuccess = true,
+                message = "Tu cuenta fue creada correctamente",
+                onDismiss = { viewModel.clearResult() }
+            )
+        }
+
+
+        uiState.error?.let {
+            RegisterResultDialog(
+                isSuccess = false,
+                message = "No se pudo completar el registro. Intenta nuevamente.",
+                onDismiss = { viewModel.clearResult() }
+            )
         }
     }
 }

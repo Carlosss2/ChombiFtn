@@ -24,9 +24,19 @@ class LoginViewModel(
     fun onPasswordChange(password: String) {
         _uiState.update { it.copy(password = password) }
     }
-
+    fun clearResult() {
+        _uiState.update {
+            it.copy(
+                error = null,
+                isLoggedIn = false
+            )
+        }
+    }
     fun login() {
         val currentState = _uiState.value
+
+
+
 
         _uiState.update { it.copy(isLoading = true, error = null) }
 

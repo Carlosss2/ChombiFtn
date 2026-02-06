@@ -1,65 +1,54 @@
 package com.carlos.chombi.feauteres.busManagement.presentation.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.shared.components.Header
 import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.primaryLight
-import com.carlos.chombi.feauteres.busManagement.presentation.components.CardBus
+import com.carlos.chombi.feauteres.busManagement.presentation.components.*
+import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModel
+import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModelFactory
 
 @Composable
-fun BusScreen() {
+fun BusScreen(
+    factory: BusViewModelFactory
+) {
+    val viewModel: BusViewModel = viewModel(factory = factory)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = primaryLight, // Color de fondo general
-        
-        bottomBar = {
-            Navbar()
-        }
+        containerColor = primaryLight,
+        bottomBar = { Navbar() }
     ) { innerPadding ->
-        // 2. El contenido principal va aquí dentro
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) // Importante: evita que el contenido quede tapado por la navbar
+                .padding(innerPadding)
                 .padding(16.dp)
         ) {
+
             Header()
 
-
-            // Tu fila de título y botón
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Text(
                     text = "Unidades registradas",
                     fontSize = 24.sp,
@@ -68,32 +57,59 @@ fun BusScreen() {
                 )
 
                 Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
-                    )
+                    onClick = viewModel::openAddDialog,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.add),
-                        contentDescription = "add",
-                        modifier = Modifier.size(29.dp),
-                        tint = primaryLight
+                        contentDescription = "Agregar",
+                        tint = primaryLight,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CardBus()
-
+            uiState.buses.forEach { bus ->
+                CardBus(
+                    unidad = bus.unitNumber.toString(),
+                    chofer = bus.driver,
+                    placa = bus.licencePlate,
+                    onEditClick = {
+                        viewModel.selectBus(bus)
+                        viewModel.openEditDialog()
+                    },
+                    onDeleteClick = {
+                        viewModel.selectBus(bus)
+                        viewModel.openDeleteDialog()
+                    }
+                )
+            }
         }
     }
 
-}
+    /* ---------------- DIALOGS ---------------- */
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewBusScreen(){
-    BusScreen()
+    if (uiState.showAddDialog) {
+        AddBusDialog(
+            onDismiss = viewModel::closeDialogs,
+            onSave = viewModel::addBus
+        )
+    }
+
+    if (uiState.showEditDialog && uiState.selectedBus != null) {
+        EditBusDialog(
+            bus = uiState.selectedBus!!,
+            onDismiss = viewModel::closeDialogs,
+            onSave = viewModel::updateSelectedBus
+        )
+    }
+
+    if (uiState.showDeleteDialog && uiState.selectedBus != null) {
+        DeleteBusDialog(
+            onConfirm = viewModel::deleteSelectedBus,
+            onDismiss = viewModel::closeDialogs
+        )
+    }
 }

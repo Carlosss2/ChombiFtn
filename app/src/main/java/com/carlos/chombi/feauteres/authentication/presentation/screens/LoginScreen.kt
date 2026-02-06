@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.secondaryLight
+import com.carlos.chombi.feauteres.authentication.presentation.components.LoginResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModel
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModelFactory
 
@@ -185,6 +186,23 @@ fun LoginScreen(
                     color = Color.Gray
                 )
             }
+
+        }
+        if (uiState.isLoggedIn) {
+            LoginResultDialog(
+                isSuccess = true,
+                message = "Bienvenido a Chombi",
+                onDismiss = { viewModel.clearResult() }
+            )
+        }
+
+
+        uiState.error?.let {
+            LoginResultDialog(
+                isSuccess = false,
+                message = "Correo o contraseña incorrectos",
+                onDismiss = { viewModel.clearResult() }
+            )
         }
     }
 }
