@@ -2,8 +2,9 @@ package com.carlos.chombi.feauteres.authentication.domain.usecases
 
 import com.carlos.chombi.feauteres.authentication.domain.entities.User
 import com.carlos.chombi.feauteres.authentication.domain.repositories.AuthRepository
+import javax.inject.Inject
 
-class AuthUserUseCase(
+class AuthUserUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(email: String, password: String): Result<User> {
