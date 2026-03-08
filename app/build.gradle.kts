@@ -1,8 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.secrets.gradle)
     alias(libs.plugins.jetbrainsKotlinSerialization)
+    // Activa Hilt y KSP
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -31,15 +34,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
     flavorDimensions.add("environment")
     productFlavors {
@@ -48,6 +50,20 @@ android {
             buildConfigField("String", "BASE_URL", "\"https://chombiapi.duckdns.org/api/v1/\"")
             resValue("string", "app_name", "REST Chombi")
         }
+    }
+}
+secrets {
+    propertiesFileName = "local.properties"
+    //  defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("sdk.dir")
+}
+ksp {
+    arg("hilt.disableModulesHaveInstallInCheck", "true")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
@@ -71,8 +87,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.navigation.common.ktx)
-    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -81,4 +96,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.android)
 }

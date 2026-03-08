@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
@@ -40,13 +41,12 @@ import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.secondaryLight
 import com.carlos.chombi.feauteres.authentication.presentation.components.LoginResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModel
-import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModelFactory
 
 @Composable
 fun LoginScreen(
-    factory: LoginViewModelFactory,onRegisterClick: () -> Unit, onBusClick: ()-> Unit
+    viewModel: LoginViewModel = hiltViewModel(), onRegisterClick: () -> Unit, onBusClick: ()-> Unit
 ) {
-    val viewModel: LoginViewModel = viewModel(factory = factory)
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(

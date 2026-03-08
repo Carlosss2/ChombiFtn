@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carlos.chombi.feauteres.authentication.domain.usecases.RegisterUserUseCase
 import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel(
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel() {
 

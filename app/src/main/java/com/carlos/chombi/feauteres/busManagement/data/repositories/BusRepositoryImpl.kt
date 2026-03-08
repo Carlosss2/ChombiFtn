@@ -5,8 +5,9 @@ import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.mapper.
 import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.domain.repositories.BusRepository
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.mapper.toDomain
+import javax.inject.Inject
 
-class BusRepositoryImpl(
+class BusRepositoryImpl @Inject constructor(
     private val api: ChombiApi
 ) : BusRepository {
 

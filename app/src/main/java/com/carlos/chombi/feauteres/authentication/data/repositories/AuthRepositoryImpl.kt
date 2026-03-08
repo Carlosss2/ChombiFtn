@@ -9,8 +9,9 @@ import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.
 import com.carlos.chombi.feauteres.authentication.domain.entities.User
 import com.carlos.chombi.feauteres.authentication.domain.repositories.AuthRepository
 import org.json.JSONObject
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val api: ChombiApi,
     private val tokenDataStore: TokenDataStore
 ) : AuthRepository {

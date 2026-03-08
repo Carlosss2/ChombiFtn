@@ -11,6 +11,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
@@ -19,13 +20,11 @@ import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.feauteres.busManagement.presentation.components.*
 import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModel
-import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModelFactory
 
 @Composable
 fun BusScreen(
-    factory: BusViewModelFactory
+    viewModel: BusViewModel = hiltViewModel()
 ) {
-    val viewModel: BusViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
