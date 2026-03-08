@@ -41,6 +41,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
     flavorDimensions.add("environment")
     productFlavors {
@@ -49,6 +50,20 @@ android {
             buildConfigField("String", "BASE_URL", "\"https://chombiapi.duckdns.org/api/v1/\"")
             resValue("string", "app_name", "REST Chombi")
         }
+    }
+}
+secrets {
+    propertiesFileName = "local.properties"
+    //  defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("sdk.dir")
+}
+ksp {
+    arg("hilt.disableModulesHaveInstallInCheck", "true")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
