@@ -25,14 +25,16 @@ import androidx.compose.ui.unit.sp
 import com.carlos.chombi.R
 import com.carlos.chombi.core.shared.components.Header
 import com.carlos.chombi.core.shared.components.Navbar
+import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.feauteres.home.presentation.components.Cards
+import com.carlos.chombi.feauteres.home.presentation.components.HeaderHome
 
 @Composable
 fun HomeScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = primaryLight,
+        containerColor = onPrimaryLight,
 
         bottomBar = {
             Navbar()
@@ -45,25 +47,9 @@ fun HomeScreen() {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            Header()
-            // Campo de contraseña
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Buscar unidad") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.search),
-                        contentDescription = "search car" ,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .offset(x = 2.dp, y = 1.dp)
-                    )
-                },
-                shape = RoundedCornerShape(12.dp),
+            HeaderHome()
 
-            )
+
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "Unidad en carga",
