@@ -26,50 +26,5 @@ class AuthNavGraph(
         navGraphBuilder: NavGraphBuilder,
         navController: NavHostController
     ) {
-
-        navGraphBuilder.composable<Login> {
-
-            val viewModel: LoginViewModel = viewModel(
-                factory = authModule.provideLoginViewModelFactory()
-            )
-
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            LoginScreen(
-                factory = authModule.provideLoginViewModelFactory(),
-                onRegisterClick = {
-                    navController.navigate(Register)
-                },
-                onBusClick = {
-                    navController.navigate(Bus)
-                },
-
-            )
-
-
-            //
-            LaunchedEffect(uiState.isLoggedIn) {
-                if (uiState.isLoggedIn) {
-                    navController.navigate(Bus) {
-                        popUpTo(Login) { inclusive = true }
-                    }
-                }
-            }
-        }
-
-
-        navGraphBuilder.composable<Register> {
-
-            val viewModel: RegisterViewModel = viewModel(
-                factory = authModule.provideRegisterViewModelFactory()
-            )
-
-            RegisterScreen(
-                factory = authModule.provideRegisterViewModelFactory(),
-                onLoginClick = {
-                    navController.navigate(Login)
-                }
-            )
-        }
     }
 }
