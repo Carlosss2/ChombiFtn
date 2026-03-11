@@ -2,7 +2,9 @@ package com.carlos.chombi.feauteres.authentication.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.feauteres.authentication.domain.usecases.RegisterUserUseCase
+import com.carlos.chombi.feauteres.authentication.navigation.AuthRoutes
 import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUserUseCase: RegisterUserUseCase
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val navigator: AppNavigator
 ) : ViewModel() {
 
     //
@@ -64,6 +67,10 @@ class RegisterViewModel @Inject constructor(
             _uiState.update { state ->
                 result.fold(
                     onSuccess = {
+
+                        navigator.navigate(AuthRoutes.LOGIN) {
+                            popUpTo(AuthRoutes.REGISTER) { inclusive = true }
+                        }
                         state.copy(isLoading = false, isSuccess = true)
                     },
                     onFailure = { exception ->
@@ -82,6 +89,11 @@ class RegisterViewModel @Inject constructor(
                 isSuccess = false,
                 error = null
             )
+        }
+    }
+    fun goToLogin() {
+        navigator.navigate(AuthRoutes.LOGIN) {
+            popUpTo(AuthRoutes.REGISTER) { inclusive = true }
         }
     }
 }

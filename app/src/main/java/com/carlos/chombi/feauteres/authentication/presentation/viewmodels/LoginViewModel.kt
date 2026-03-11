@@ -2,7 +2,9 @@ package com.carlos.chombi.feauteres.authentication.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.feauteres.authentication.domain.usecases.AuthUserUseCase
+import com.carlos.chombi.feauteres.authentication.navigation.AuthRoutes
 import com.carlos.chombi.feauteres.authentication.presentation.screens.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: AuthUserUseCase
+    private val loginUseCase: AuthUserUseCase,
+    private val navigator: AppNavigator
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -52,6 +55,8 @@ class LoginViewModel @Inject constructor(
             _uiState.update { state ->
                 result.fold(
                     onSuccess = {
+                        navigator.navigate("home_graph") { popUpTo(AuthRoutes.AUTH_GRAPH) { inclusive = true }
+                        }
                         state.copy(
                             isLoading = false,
                             isLoggedIn = true
@@ -65,6 +70,12 @@ class LoginViewModel @Inject constructor(
                     }
                 )
             }
+        }
+
+    }
+    fun goToRegister() {
+        navigator.navigate(AuthRoutes.REGISTER) {
+            popUpTo(AuthRoutes.LOGIN) { inclusive = true }
         }
     }
 }

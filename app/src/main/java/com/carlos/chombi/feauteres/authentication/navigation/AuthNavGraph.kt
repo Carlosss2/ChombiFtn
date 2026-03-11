@@ -1,30 +1,37 @@
 package com.carlos.chombi.feauteres.authentication.navigation
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.carlos.chombi.core.navegation.Bus
-import com.carlos.chombi.core.navegation.FeatureNavGraph
-import com.carlos.chombi.core.navegation.Home
-import com.carlos.chombi.core.navegation.Login
-import com.carlos.chombi.core.navegation.Register
-import com.carlos.chombi.feauteres.authentication.di.AuthModule
+import androidx.navigation.compose.navigation
+import com.carlos.chombi.core.navigation.FeatureNavGraph
+
 import com.carlos.chombi.feauteres.authentication.presentation.screens.LoginScreen
 import com.carlos.chombi.feauteres.authentication.presentation.screens.RegisterScreen
-import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModel
-import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModel
+import javax.inject.Inject
 
-class AuthNavGraph(
-    private val authModule: AuthModule
-) : FeatureNavGraph {
+class AuthNavGraph @Inject constructor() : FeatureNavGraph {
 
-    override fun registerGraph(
-        navGraphBuilder: NavGraphBuilder,
-        navController: NavHostController
-    ) {
+    override fun register(builder: NavGraphBuilder) {
+        builder.navigation(
+            route = AuthRoutes.AUTH_GRAPH,
+            startDestination = AuthRoutes.LOGIN
+        ) {
+            composable(AuthRoutes.LOGIN) {
+                LoginScreen(
+                    onRegisterClick = {
+                        // TODO: Navigate to Register Route
+                    },
+                    onBusClick = {
+                        // TODO: Navigate to Bus/Home Route
+                    }
+                )
+            }
+
+            composable(AuthRoutes.REGISTER) {
+                RegisterScreen(onLoginClick = {
+                    // TODO: Navigate to Login Route
+                })
+            }
+        }
     }
 }

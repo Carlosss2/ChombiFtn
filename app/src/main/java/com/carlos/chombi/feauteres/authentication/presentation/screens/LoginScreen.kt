@@ -178,7 +178,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Texto registro (solo UI, sin navegación aquí)
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -197,7 +197,7 @@ fun LoginScreen(
                     },
                     fontSize = 14.sp,
                     color = Color.Gray,
-                    modifier = Modifier.clickable { onRegisterClick() }
+                    modifier = Modifier.clickable { viewModel.goToRegister() }
                 )
             }
 

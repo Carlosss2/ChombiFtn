@@ -91,7 +91,7 @@ fun RegisterScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onLoginClick() }
+                modifier = Modifier.clickable { viewModel.goToLogin() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.angle_circle_left),
