@@ -4,14 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.carlos.chombi.R
+import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.core.ui.theme.primaryLight
 
 @Composable
@@ -37,32 +40,35 @@ fun Navbar() {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.bus),
+            Icon(
+                painter = painterResource(id = R.drawable.homen),
                 contentDescription = "Home",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = onPrimaryLight
             )
 
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.bus__1_),
                 contentDescription = "Bus",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = onPrimaryLight
             )
 
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.time_past),
                 contentDescription = "Time",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = onPrimaryLight
             )
 
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.newspaper),
                 contentDescription = "News",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = onPrimaryLight
             )
         }
-
-        // Botón "+"
+        
         Box(
             modifier = Modifier
                 .size(70.dp) // MISMA ALTURA QUE EL NAVBAR
@@ -70,10 +76,11 @@ fun Navbar() {
                 .background(primaryLight),
             contentAlignment = Alignment.Center
         ) {
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.add),
                 contentDescription = "Add",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(30.dp),
+                tint = onPrimaryLight
             )
         }
     }

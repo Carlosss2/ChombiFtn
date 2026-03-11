@@ -1,8 +1,17 @@
-package com.carlos.chombi.feauteres.home.presentation.components
+package com.carlos.chombi.feauteres.busManagement.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -20,8 +29,7 @@ import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
 
 @Composable
-fun HeaderHome() {
-
+fun HeaderBus(){
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -36,8 +44,8 @@ fun HeaderHome() {
         Column {
 
             Text(
-                text = "Salida de hoy" + "\nChombi",
-                fontSize = 34.sp,
+                text = "Chombi",
+                fontSize = 38.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
@@ -82,6 +90,26 @@ fun HeaderHome() {
 
                 Spacer(modifier = Modifier.width(14.dp))
 
+                // BOTON FILTRO
+                Card(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .shadow(10.dp, RoundedCornerShape(30.dp)),
+                    shape = RoundedCornerShape(30.dp)
+                ) {
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Image(
+                            painter = painterResource(R.drawable.add),
+                            contentDescription = null,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
             }
         }
 
@@ -91,6 +119,7 @@ fun HeaderHome() {
 
 @Preview(showBackground = true)
 @Composable
-fun PrevewHeaderHome(){
-    HeaderHome()
+fun PreviewHeaderBus(){
+    HeaderBus()
 }
+

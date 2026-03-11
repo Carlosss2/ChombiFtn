@@ -3,8 +3,7 @@ package com.carlos.chombi.core.di
 
 import android.content.Context
 import com.carlos.chombi.BuildConfig
-import com.carlos.chombi.core.network.AuthInterceptor
-import com.carlos.chombi.core.network.ChombiApi
+
 import com.carlos.chombi.core.session.SessionManager
 import com.carlos.chombi.core.session.TokenDataStore
 
@@ -34,27 +33,16 @@ object NetworkModule {
         return SessionManager(tokenDataStore)
     }
 
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .build()
-    }
+
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideSharedUpApi(retrofit: Retrofit): ChombiApi {
-        return retrofit.create(ChombiApi::class.java)
-    }
+
 }
