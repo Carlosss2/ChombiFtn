@@ -2,8 +2,9 @@ package com.carlos.chombi.feauteres.busManagement.domain.usecases
 
 import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.domain.repositories.BusRepository
+import javax.inject.Inject
 
-class GetAllBusesUseCase(
+class GetAllBusesUseCase @Inject constructor(
     private val repository: BusRepository
 ) {
 

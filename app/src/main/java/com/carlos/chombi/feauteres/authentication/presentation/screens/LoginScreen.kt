@@ -16,6 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -23,6 +27,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +37,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
@@ -40,14 +48,18 @@ import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.secondaryLight
 import com.carlos.chombi.feauteres.authentication.presentation.components.LoginResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModel
-import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModelFactory
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    factory: LoginViewModelFactory,onRegisterClick: () -> Unit, onBusClick: ()-> Unit
+    viewModel: LoginViewModel = hiltViewModel(), onRegisterClick: () -> Unit, onBusClick: ()-> Unit
 ) {
-    val viewModel: LoginViewModel = viewModel(factory = factory)
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     Column(
         modifier = Modifier
@@ -99,8 +111,7 @@ fun LoginScreen(
                 color = primaryLight
             )
 
-            Spacer(modifier = Modifier.height(34.dp))
-
+            Spacer(modifier = Modifier.height(36.dp))
             // Email
             TextField(
                 value = uiState.email,
@@ -211,4 +222,14 @@ fun LoginScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLogin(){
+    LoginScreen(
+        onRegisterClick = {},
+        onBusClick = {}
+    )
+
 }

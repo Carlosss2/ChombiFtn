@@ -16,12 +16,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,19 +37,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.feauteres.authentication.presentation.components.RegisterResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModel
-import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.RegisterViewModelFactory
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    factory: RegisterViewModelFactory,onLoginClick: () -> Unit
+    viewModel: RegisterViewModel= hiltViewModel(), onLoginClick: () -> Unit
 ) {
-    val viewModel: RegisterViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // Estados locales para el Dropdown
+    var expanded by remember { mutableStateOf(false) }
+    val roles = listOf("Checador", "Conductor")
+    var selectedRol by remember { mutableStateOf("Selecciona rol") }
 
     Column(
         modifier = Modifier
@@ -105,6 +117,45 @@ fun RegisterScreen(
 
 
             Spacer(modifier = Modifier.height(20.dp))
+
+            // --- SELECTOR DE ROL (DROPDOWN) ---
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextField(
+                    value = selectedRol,
+                    onValueChange = {},
+                    readOnly = true, // Evita que el usuario escriba
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.LightGray,
+                        focusedBorderColor = primaryLight
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .menuAnchor() // Vincula el menú al TextField
+                        .fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    roles.forEach { opcion ->
+                        DropdownMenuItem(
+                            text = { Text(text = opcion) },
+                            onClick = {
+                                selectedRol = opcion
+                                expanded = false
+                                // Aquí podrías llamar a viewModel.onRoleChange(opcion)
+                            }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(36.dp))
 
             // Campo de nombres
             CustomTextField(
@@ -182,7 +233,7 @@ fun RegisterScreen(
     }
 }
 
-// Componente reutilizable para no repetir código de diseño
+
 @Composable
 fun CustomTextField(
     value: String,

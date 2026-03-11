@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.domain.usecases.*
 import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BusViewModel(
+@HiltViewModel
+class BusViewModel @Inject constructor(
     private val getAllBusesUseCase: GetAllBusesUseCase,
     private val addBusUseCase: AddBusUseCase,
     private val updateBusUseCase: UpdateBusUseCase,
