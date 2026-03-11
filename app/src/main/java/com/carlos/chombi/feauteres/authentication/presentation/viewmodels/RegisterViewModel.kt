@@ -40,35 +40,41 @@ class RegisterViewModel @Inject constructor(
     //  Función principal de Registro
 
     fun onRegister() {
-        // Obtenemos los valores actuales del estado
+
         val currentState = _uiState.value
 
-        // Activamos el loading y limpiamos errores previos
+        val roleId = when (currentState.role) {
+            "Checador" -> "46defe78-1d69-11f1-b7f4-16ffec603d6d"
+            "Conductor" -> "UUID_DEL_CONDUCTOR"
+            else -> ""
+        }
+
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
-            // Llamamos al UseCase
+
             val result = registerUserUseCase(
                 name = currentState.name,
                 lastName = currentState.lastName,
                 email = currentState.email,
-                password = currentState.password
+                password = currentState.password,
+                roleId = roleId
             )
 
-            // Manejamos el resultado usando fold (como en tu ejemplo)
             _uiState.update { state ->
                 result.fold(
                     onSuccess = {
-                        // Registro exitoso: quitamos loading y marcamos éxito
                         state.copy(isLoading = false, isSuccess = true)
                     },
                     onFailure = { exception ->
-                        // Error: quitamos loading y mostramos el mensaje
                         state.copy(isLoading = false, error = exception.message)
                     }
                 )
             }
         }
+    }
+    fun onRoleChange(role: String) {
+        _uiState.update { it.copy(role = role) }
     }
     fun clearResult() {
         _uiState.update {

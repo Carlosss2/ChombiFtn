@@ -12,12 +12,12 @@ import retrofit2.http.Path
 
 interface ChombiApi {
 
-    @POST("login")
+    @POST("auth/login")
     suspend fun loginUser(
         @Body credentials: LoginRequestDto // ENVIAMOS email y pass
     ): AuthResponse // RECIBIMOS usuario + token
 
-    @POST("register")
+    @POST("auth/register")
     suspend fun registerUser(
         @Body userData: UserRegisterDto // ENVIAMOS datos completos
     ): retrofit2.Response<AuthResponse>

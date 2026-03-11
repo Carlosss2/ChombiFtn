@@ -149,7 +149,7 @@ fun RegisterScreen(
                             onClick = {
                                 selectedRol = opcion
                                 expanded = false
-                                // Aquí podrías llamar a viewModel.onRoleChange(opcion)
+                                viewModel.onRoleChange(opcion)
                             }
                         )
                     }

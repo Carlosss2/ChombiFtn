@@ -7,10 +7,11 @@ import com.carlos.chombi.feauteres.authentication.domain.entities.User
 // Mapper de Dominio a DTO (Para enviar datos al server)
 fun User.toRegisterDto(): UserRegisterDto {
     return UserRegisterDto(
-        name = this.name,
-        lastName = this.lastName,
+        first_name = this.name,
+        last_name = this.lastName,
         email = this.email,
-        password = this.password
+        password = this.password,
+        rol_id = this.roleId
     )
 }
 
@@ -26,6 +27,7 @@ fun UserDto?.toDomain(): User? {
         name = this.name ?: "",      // Si el campo individual llega nulo, ponemos texto vacío
         lastName = this.lastName ?: "",
         email = this.email ?: "",
-        password = "" // El backend no devuelve la contraseña por seguridad
+        password = "", // El backend no devuelve la contraseña por seguridad
+        roleId = "",
     )
 }

@@ -47,7 +47,7 @@ android {
     productFlavors {
         create("dev") {
             dimension = "environment"
-            buildConfigField("String", "BASE_URL", "\"https://chombiapi.duckdns.org/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"http://98.87.177.212:8080/api/v2/\"")
             resValue("string", "app_name", "REST Chombi")
         }
     }

@@ -11,7 +11,8 @@ class RegisterUserUseCase @Inject constructor(
         name: String,
         lastName: String,
         email: String,
-        password: String
+        password: String,
+        roleId: String
     ): Result<User> {
         return try {
             // Verificar campos vacíos
@@ -34,7 +35,8 @@ class RegisterUserUseCase @Inject constructor(
                 name = name,
                 lastName = lastName,
                 email = email,
-                password = password
+                password = password,
+                roleId = roleId
             )
             val registeredUser = repository.registerUser(newUser)
 
