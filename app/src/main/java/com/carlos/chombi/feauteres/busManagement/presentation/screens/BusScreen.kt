@@ -6,8 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -15,12 +13,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
-import com.carlos.chombi.R
 import com.carlos.chombi.core.shared.components.Header
-
 import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.onPrimaryLight
-import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.feauteres.busManagement.presentation.components.*
 import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModel
 
@@ -29,12 +24,14 @@ fun BusScreen(
     viewModel: BusViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentPhoto by viewModel.currentPhoto.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = onPrimaryLight,
         bottomBar = { Navbar(
             onHomeClick = { viewModel.goHome() },
-            onAddClick = { viewModel.goToAddBus() },
+            onAddClick = { viewModel.goToAddBus() }, // Cambio: Abre el diálogo
             onHistoryClick = { viewModel.goToHistory() }
         ) }
     ) { innerPadding ->
@@ -45,14 +42,13 @@ fun BusScreen(
                 .padding(innerPadding)
         ) {
 
-            HeaderBus()
+            HeaderBus(onAddClick = { viewModel.openAddDialog() })
             Spacer(modifier = Modifier.height(40.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     text = "Unidades registradas",
                     fontSize = 24.sp,
@@ -60,8 +56,6 @@ fun BusScreen(
                     color = Color.Black,
                     modifier = Modifier.padding(start = 16.dp)
                 )
-
-
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -71,6 +65,8 @@ fun BusScreen(
                     unidad = bus.unitNumber.toString(),
                     chofer = bus.driver,
                     placa = bus.licencePlate,
+                    modelo = bus.model,
+                    imageUrl = bus.imageUrl,
                     onEditClick = {
                         viewModel.selectBus(bus)
                         viewModel.openEditDialog()
@@ -84,12 +80,12 @@ fun BusScreen(
         }
     }
 
-
-
     if (uiState.showAddDialog) {
         AddBusDialog(
             onDismiss = viewModel::closeDialogs,
-            onSave = viewModel::addBus
+            onSave = viewModel::addBus,
+            onTakePhotoClick = viewModel::takePhoto,
+            currentPhoto = currentPhoto
         )
     }
 
@@ -107,10 +103,4 @@ fun BusScreen(
             onDismiss = viewModel::closeDialogs
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewBusScreen(){
-    BusScreen()
 }

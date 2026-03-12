@@ -10,7 +10,9 @@ fun BusDto.toDomain(): Bus {
         driver = driver,
         unitNumber = unitNumber,
         shift = shift,
-        isWorking = isWorking
+        isWorking = isWorking,
+        model = model,
+        imageUrl = imageUrl
     )
 }
 
@@ -21,10 +23,12 @@ fun Bus.toDto(): BusDto {
         driver = driver,
         unitNumber = unitNumber,
         shift = shift,
-        isWorking = isWorking
+        isWorking = isWorking,
+        model = model,
+        imageUrl = imageUrl
     )
 }
+
 fun List<BusDto>.toDomain(): List<Bus> {
     return map { it.toDomain() }
 }
-

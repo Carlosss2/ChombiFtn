@@ -36,7 +36,7 @@ fun HeaderHome() {
         Column {
 
             Text(
-                text = "Salida de hoy" + "\nChombi",
+                text = "Chombi",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
