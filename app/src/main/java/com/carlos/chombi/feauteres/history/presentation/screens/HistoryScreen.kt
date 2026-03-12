@@ -14,19 +14,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.feauteres.history.presentation.components.CardHistory
 import com.carlos.chombi.feauteres.history.presentation.components.HeaderHistory
+import com.carlos.chombi.feauteres.history.presentation.viewmodels.HistoryViewModel
+
 
 @Composable
-fun HistoryScreen(){
+fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = onPrimaryLight,
 
         bottomBar = {
-            Navbar()
+            Navbar(
+                onHomeClick = { viewModel.goHome() },
+                onAddClick = { viewModel.goToAddBus() },
+                onHistoryClick = { viewModel.goToHistory() }
+            )
         }
     ) { innerPadding ->
 

@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import com.carlos.chombi.R
@@ -32,7 +32,11 @@ fun BusScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = onPrimaryLight,
-        bottomBar = { Navbar() }
+        bottomBar = { Navbar(
+            onHomeClick = { viewModel.goHome() },
+            onAddClick = { viewModel.goToAddBus() },
+            onHistoryClick = { viewModel.goToHistory() }
+        ) }
     ) { innerPadding ->
 
         Column(

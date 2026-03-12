@@ -2,9 +2,13 @@ package com.carlos.chombi.feauteres.busManagement.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.domain.usecases.*
+import com.carlos.chombi.feauteres.busManagement.navigation.BusRoutes
 import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusUiState
+import com.carlos.chombi.feauteres.history.navigation.HistoryRoutes
+import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +21,8 @@ class BusViewModel @Inject constructor(
     private val getAllBusesUseCase: GetAllBusesUseCase,
     private val addBusUseCase: AddBusUseCase,
     private val updateBusUseCase: UpdateBusUseCase,
-    private val deleteBusUseCase: DeleteBusUseCase
+    private val deleteBusUseCase: DeleteBusUseCase,
+    private val navigator: AppNavigator,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BusUiState())
@@ -106,7 +111,7 @@ class BusViewModel @Inject constructor(
         }
     }
 
-    /* -------------------- DIALOGS -------------------- */
+
 
     fun openAddDialog() {
         _uiState.update { it.copy(showAddDialog = true) }
@@ -129,5 +134,17 @@ class BusViewModel @Inject constructor(
                 selectedBus = null
             )
         }
+    }
+
+    fun goHome() {
+        navigator.navigate(HomeRoutes.HOME_GRAPH)
+    }
+
+    fun goToAddBus() {
+        navigator.navigate(BusRoutes.BUS_GRAPH)
+    }
+
+    fun goToHistory() {
+        navigator.navigate(HistoryRoutes.HISTORY_GRAPH)
     }
 }
