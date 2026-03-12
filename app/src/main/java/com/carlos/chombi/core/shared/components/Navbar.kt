@@ -66,7 +66,7 @@ fun Navbar(
                 painter = painterResource(id = R.drawable.time_past),
                 contentDescription = "Time",
                 modifier = Modifier.size(30.dp)
-                    .clickable { onHistoryClick },
+                    .clickable { onHistoryClick() },
                 tint = onPrimaryLight
             )
 

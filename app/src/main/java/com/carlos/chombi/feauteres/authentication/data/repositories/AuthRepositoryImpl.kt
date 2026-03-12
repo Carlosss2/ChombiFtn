@@ -17,22 +17,20 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun registerUser(user: User): User {
-
         val userDtoToSend = user.toRegisterDto()
         val response = api.registerUser(userDtoToSend)
 
         if (response.isSuccessful) {
-
             val body = response.body()
                 ?: throw Exception("Respuesta del servidor vacía")
 
             // Guardar token si viene
             body.token?.let { tokenDataStore.saveToken(it) }
 
-            return body.data?.toDomain() ?: user
+            // <-- CAMBIO AQUÍ: Llamamos toDomain directamente sobre body
+            return body.toDomain() ?: user
 
         } else {
-
             val errorBodyString = response.errorBody()?.string()
 
             val errorMessage = try {
@@ -51,16 +49,19 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun authUser(email: String, password: String): User {
-
         val response = api.loginUser(
             LoginRequestDto(email, password)
         )
 
-        // Guardar token
-        tokenDataStore.saveToken(response.token)
-        Log.d("DEBUG_TOKEN", response.token)
+        // Validamos que el token exista
+        val token = response.token ?: throw Exception("El servidor no devolvió un token")
 
-        return response.data?.toDomain()
-            ?: throw Exception("Credenciales inválidas")
+        // Guardar token
+        tokenDataStore.saveToken(token)
+        Log.d("DEBUG_TOKEN", token)
+
+        // <-- CAMBIO AQUÍ: Convertimos directamente response (que es AuthResponse) a dominio
+        return response.toDomain()
+            ?: throw Exception("No se pudieron procesar los datos del usuario")
     }
 }

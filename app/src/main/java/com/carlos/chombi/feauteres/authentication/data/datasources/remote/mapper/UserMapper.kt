@@ -1,6 +1,6 @@
 package com.carlos.chombi.feauteres.authentication.data.datasources.remote.mapper
 
-import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.UserDto
+import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.AuthResponse
 import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.UserRegisterDto
 import com.carlos.chombi.feauteres.authentication.domain.entities.User
 
@@ -15,19 +15,15 @@ fun User.toRegisterDto(): UserRegisterDto {
     )
 }
 
-/**
- * Mapper de DTO a Dominio (Para recibir datos del server)
- * Se agrega el "?" en UserDto para que acepte nulos y no truene la app.
- */
-fun UserDto?.toDomain(): User? {
-    // Si el objeto es nulo, regresamos nulo de forma segura
+
+fun AuthResponse?.toDomain(): User? {
     if (this == null) return null
 
     return User(
-        name = this.name ?: "",      // Si el campo individual llega nulo, ponemos texto vacío
+        name = this.firstName ?: "",
         lastName = this.lastName ?: "",
         email = this.email ?: "",
         password = "", // El backend no devuelve la contraseña por seguridad
-        roleId = "",
+        roleId = this.roleName ?: "", // Mapeamos el rol de la API
     )
 }

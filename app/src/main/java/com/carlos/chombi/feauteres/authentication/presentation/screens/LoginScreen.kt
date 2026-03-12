@@ -214,10 +214,10 @@ fun LoginScreen(
         }
 
 
-        uiState.error?.let {
+        uiState.error?.let { errorMessage ->
             LoginResultDialog(
                 isSuccess = false,
-                message = "Correo o contraseña incorrectos",
+                message = errorMessage, //
                 onDismiss = { viewModel.clearResult() }
             )
         }

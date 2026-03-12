@@ -59,7 +59,6 @@ class LoginViewModel @Inject constructor(
                         }
                         state.copy(
                             isLoading = false,
-                            isLoggedIn = true
                         )
                     },
                     onFailure = { exception ->
