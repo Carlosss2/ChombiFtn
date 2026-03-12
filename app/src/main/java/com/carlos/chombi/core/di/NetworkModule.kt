@@ -1,17 +1,16 @@
 package com.carlos.chombi.core.di
 
-
 import android.content.Context
 import com.carlos.chombi.BuildConfig
-
 import com.carlos.chombi.core.session.SessionManager
 import com.carlos.chombi.core.session.TokenDataStore
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,15 +33,30 @@ object NetworkModule {
     }
 
 
-
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    fun provideOkHttpClient(tokenDataStore: TokenDataStore): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
+            val token = runBlocking { tokenDataStore.getToken() }
+
+            val requestBuilder = chain.request().newBuilder()
+
+            if (!token.isNullOrBlank()) {
+                requestBuilder.addHeader("Authorization", "Bearer $token")
+            }
+
+            chain.proceed(requestBuilder.build())
+        }).build()
     }
 
 
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 }

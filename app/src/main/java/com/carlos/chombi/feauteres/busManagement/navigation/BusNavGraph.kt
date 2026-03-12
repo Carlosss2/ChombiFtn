@@ -1,22 +1,23 @@
 package com.carlos.chombi.feauteres.busManagement.navigation
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+
 import androidx.navigation.compose.composable
-import com.carlos.chombi.core.navegation.Bus
-import com.carlos.chombi.core.navegation.FeatureNavGraph
-import com.carlos.chombi.feauteres.busManagement.data.di.BusModule
+import androidx.navigation.compose.navigation
+import com.carlos.chombi.core.navigation.FeatureNavGraph
 import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusScreen
-import com.carlos.chombi.feauteres.busManagement.presentation.viewmodels.BusViewModel
+import javax.inject.Inject
 
-class BusNavGraph(
-    private val busModule: BusModule
-) : FeatureNavGraph {
+class BusNavGraph @Inject constructor() : FeatureNavGraph {
 
-    override fun registerGraph(
-        navGraphBuilder: NavGraphBuilder,
-        navController: NavHostController
-    ) {
+    override fun register(builder: NavGraphBuilder) {
+        builder.navigation(
+            route = BusRoutes.BUS_GRAPH,
+            startDestination = BusRoutes.BUS
+        ) {
+            composable(BusRoutes.BUS) {
+                BusScreen()
+            }
+        }
     }
 }

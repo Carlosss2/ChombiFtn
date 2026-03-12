@@ -2,6 +2,7 @@ package com.carlos.chombi.feauteres.busManagement.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,7 +31,9 @@ import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
 
 @Composable
-fun HeaderBus(){
+fun HeaderBus(
+    onAddClick: () -> Unit = {} // <-- Añadimos este parámetro
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,9 +44,7 @@ fun HeaderBus(){
             )
             .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
-
         Column {
-
             Text(
                 text = "Chombi",
                 fontSize = 38.sp,
@@ -55,7 +57,6 @@ fun HeaderBus(){
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 // BUSCADOR
                 Card(
                     modifier = Modifier
@@ -64,14 +65,12 @@ fun HeaderBus(){
                         .shadow(10.dp, RoundedCornerShape(30.dp)),
                     shape = RoundedCornerShape(30.dp)
                 ) {
-
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Image(
                             painter = painterResource(R.drawable.search),
                             contentDescription = null,
@@ -90,19 +89,19 @@ fun HeaderBus(){
 
                 Spacer(modifier = Modifier.width(14.dp))
 
-                // BOTON FILTRO
+                // BOTÓN AGREGAR
                 Card(
                     modifier = Modifier
                         .size(56.dp)
-                        .shadow(10.dp, RoundedCornerShape(30.dp)),
+                        .shadow(10.dp, RoundedCornerShape(30.dp))
+                        .clip(RoundedCornerShape(30.dp)) // Asegura que el efecto ripple (onda) respete los bordes curvos
+                        .clickable { onAddClick() }, // <-- AQUÍ VA LA ACCIÓN DEL CLIC
                     shape = RoundedCornerShape(30.dp)
                 ) {
-
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-
                         Image(
                             painter = painterResource(R.drawable.add),
                             contentDescription = null,
@@ -112,8 +111,6 @@ fun HeaderBus(){
                 }
             }
         }
-
-
     }
 }
 
@@ -122,4 +119,3 @@ fun HeaderBus(){
 fun PreviewHeaderBus(){
     HeaderBus()
 }
-

@@ -19,6 +19,12 @@ class AddBusUseCase @Inject constructor(
             if (bus.driver.isBlank()) {
                 return Result.failure(Exception("El nombre del conductor es obligatorio."))
             }
+            if (bus.model.isBlank()) {
+                return Result.failure(Exception("El modelo es obligatorio."))
+            }
+            if (bus.imageUrl.isNullOrBlank()) {
+                return Result.failure(Exception("La fotografía es obligatoria."))
+            }
 
             // Llamada al repositorio
             repository.addBus(bus)

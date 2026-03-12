@@ -2,14 +2,20 @@ package com.carlos.chombi.feauteres.busManagement.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carlos.chombi.core.hardware.domain.CameraManager
+import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.feauteres.busManagement.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.domain.usecases.*
+import com.carlos.chombi.feauteres.busManagement.navigation.BusRoutes
 import com.carlos.chombi.feauteres.busManagement.presentation.screens.BusUiState
+import com.carlos.chombi.feauteres.history.navigation.HistoryRoutes
+import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,49 +23,38 @@ class BusViewModel @Inject constructor(
     private val getAllBusesUseCase: GetAllBusesUseCase,
     private val addBusUseCase: AddBusUseCase,
     private val updateBusUseCase: UpdateBusUseCase,
-    private val deleteBusUseCase: DeleteBusUseCase
+    private val deleteBusUseCase: DeleteBusUseCase,
+    private val navigator: AppNavigator,
+    private val cameraManager: CameraManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BusUiState())
     val uiState: StateFlow<BusUiState> = _uiState
 
+    // Estado para la foto actual
+    private val _currentPhoto = MutableStateFlow<File?>(null)
+    val currentPhoto: StateFlow<File?> = _currentPhoto
+
     init {
         loadBuses()
     }
 
-
-
     fun loadBuses() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-
             getAllBusesUseCase()
                 .onSuccess { buses ->
-                    _uiState.update {
-                        it.copy(
-                            buses = buses,
-                            isLoading = false
-                        )
-                    }
+                    _uiState.update { it.copy(buses = buses, isLoading = false) }
                 }
                 .onFailure { error ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = error.message
-                        )
-                    }
+                    _uiState.update { it.copy(isLoading = false, error = error.message) }
                 }
         }
     }
 
-
-
     fun selectBus(bus: Bus) {
         _uiState.update { it.copy(selectedBus = bus) }
     }
-
-
 
     fun addBus(bus: Bus) {
         viewModelScope.launch {
@@ -69,12 +64,10 @@ class BusViewModel @Inject constructor(
                     loadBuses()
                 }
                 .onFailure {
-                    _uiState.update { it.copy(error = it.error) }
+                    _uiState.update { state -> state.copy(error = it.message) }
                 }
         }
     }
-
-    /* -------------------- UPDATE -------------------- */
 
     fun updateSelectedBus(updatedBus: Bus) {
         viewModelScope.launch {
@@ -84,16 +77,13 @@ class BusViewModel @Inject constructor(
                     loadBuses()
                 }
                 .onFailure {
-                    _uiState.update { it.copy(error = it.error) }
+                    _uiState.update { state -> state.copy(error = it.message) }
                 }
         }
     }
 
-    /* -------------------- DELETE -------------------- */
-
     fun deleteSelectedBus() {
         val bus = _uiState.value.selectedBus ?: return
-
         viewModelScope.launch {
             deleteBusUseCase(bus)
                 .onSuccess {
@@ -101,12 +91,23 @@ class BusViewModel @Inject constructor(
                     loadBuses()
                 }
                 .onFailure {
-                    _uiState.update { it.copy(error = it.error) }
+                    _uiState.update { state -> state.copy(error = it.message) }
                 }
         }
     }
 
-    /* -------------------- DIALOGS -------------------- */
+    // Hardware Cámara
+    fun takePhoto() {
+        viewModelScope.launch {
+            cameraManager.takePhoto()
+                .onSuccess { file ->
+                    _currentPhoto.value = file
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(error = "Error al tomar foto: ${error.message}") }
+                }
+        }
+    }
 
     fun openAddDialog() {
         _uiState.update { it.copy(showAddDialog = true) }
@@ -121,6 +122,7 @@ class BusViewModel @Inject constructor(
     }
 
     fun closeDialogs() {
+        _currentPhoto.value = null // Limpiar foto
         _uiState.update {
             it.copy(
                 showAddDialog = false,
@@ -129,5 +131,17 @@ class BusViewModel @Inject constructor(
                 selectedBus = null
             )
         }
+    }
+
+    fun goHome() {
+        navigator.navigate(HomeRoutes.HOME_GRAPH)
+    }
+
+    fun goToAddBus() {
+        navigator.navigate(BusRoutes.BUS_GRAPH)
+    }
+
+    fun goToHistory() {
+        navigator.navigate(HistoryRoutes.HISTORY_GRAPH)
     }
 }
