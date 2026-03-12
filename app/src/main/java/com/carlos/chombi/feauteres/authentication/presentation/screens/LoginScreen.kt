@@ -1,5 +1,7 @@
 package com.carlos.chombi.feauteres.authentication.presentation.screens
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,24 +16,23 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -40,26 +41,35 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.secondaryLight
 import com.carlos.chombi.feauteres.authentication.presentation.components.LoginResultDialog
 import com.carlos.chombi.feauteres.authentication.presentation.viewmodels.LoginViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
+// FUNCIÓN CLAVE PARA EXTRAER EL FRAGMENT ACTIVITY
+fun Context.findActivity(): FragmentActivity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is FragmentActivity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return null
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(), onRegisterClick: () -> Unit, onBusClick: ()-> Unit
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    val context = LocalContext.current
+    val fragmentActivity = remember(context) { context.findActivity() } // Obtenemos la actividad correcta
 
     Column(
         modifier = Modifier
@@ -176,6 +186,32 @@ fun LoginScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Biométrico
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = {
+                        // Lanzamos biometría solo si encontramos el FragmentActivity
+                        fragmentActivity?.let { activity ->
+                            viewModel.loginWithBiometrics(activity)
+                        }
+                    },
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Fingerprint,
+                        contentDescription = "Login con huella",
+                        modifier = Modifier.size(48.dp),
+                        tint = primaryLight
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
 
@@ -213,11 +249,10 @@ fun LoginScreen(
             )
         }
 
-
         uiState.error?.let { errorMessage ->
             LoginResultDialog(
                 isSuccess = false,
-                message = errorMessage, //
+                message = errorMessage,
                 onDismiss = { viewModel.clearResult() }
             )
         }
@@ -231,5 +266,4 @@ fun PreviewLogin(){
         onRegisterClick = {},
         onBusClick = {}
     )
-
 }

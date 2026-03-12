@@ -98,4 +98,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.biometric)
 }
