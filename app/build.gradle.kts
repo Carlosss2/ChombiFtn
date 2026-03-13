@@ -89,6 +89,14 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
+
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler) // <--- Importante usar KSP
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -25,6 +25,7 @@ foundation = "1.10.2"
 ui = "1.10.1"
 datastore = "1.1.1"
 biometric = "1.2.0-alpha05"
+room = "2.8.4"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -62,6 +63,12 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
+
+#room
+# Room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
