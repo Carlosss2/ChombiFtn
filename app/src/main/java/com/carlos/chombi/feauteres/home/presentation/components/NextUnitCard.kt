@@ -14,21 +14,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.carlos.chombi.core.ui.theme.colorRed
-import com.carlos.chombi.core.ui.theme.onErrorDark
-import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.core.ui.theme.onSurfaceVariantDark
 import com.carlos.chombi.core.ui.theme.primaryLight
+import com.carlos.chombi.feauteres.home.domain.entities.Bus
 
 @Composable
 fun NextUnitCard(
-    unitNumber: String,
-    driverName: String,
+    bus: Bus,
+    onSkip: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-
-
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -51,7 +46,7 @@ fun NextUnitCard(
                     .background(primaryLight)
             ) {
                 Text(
-                    text = unitNumber,
+                    text = "#${bus.unitNumber}",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
@@ -60,16 +55,17 @@ fun NextUnitCard(
 
             // Nombre del Chofer
             Text(
-                text = "Chofer: $driverName",
+                text = "Chofer: ${bus.driver}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
                 color = Color.Black,
-                modifier = Modifier.weight(1f).padding(horizontal = 16.dp)
+                modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+                maxLines = 1
             )
 
             // Botón de Saltar
             Button(
-                onClick = { },
+                onClick = onSkip,
                 colors = ButtonDefaults.buttonColors(containerColor = colorRed),
                 shape = RoundedCornerShape(12.dp),
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 0.dp)

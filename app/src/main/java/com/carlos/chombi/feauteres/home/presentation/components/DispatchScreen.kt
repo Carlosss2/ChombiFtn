@@ -2,14 +2,14 @@ package com.carlos.chombi.features.home.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.carlos.chombi.core.ui.theme.onPrimaryLight
@@ -17,16 +17,22 @@ import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.scrimLight
 import com.carlos.chombi.features.home.presentation.components.ActiveUnitSection
 import com.carlos.chombi.features.home.presentation.components.NextUnitCard
+import com.carlos.chombi.feauteres.home.domain.entities.Bus
+import com.carlos.chombi.feauteres.home.presentation.screens.HomeUiState
 
 @Composable
-fun DispatchScreen() {
-
-
+fun DispatchScreen(
+    uiState: HomeUiState,
+    onAddPassenger: () -> Unit,
+    onFinishLoading: () -> Unit,
+    onSkipUnit: (Bus) -> Unit,
+    onEndDay: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(onPrimaryLight)
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -43,7 +49,7 @@ fun DispatchScreen() {
                 fontSize = 24.sp
             )
             Button(
-                onClick = { },
+                onClick = onEndDay,
                 colors = ButtonDefaults.buttonColors(containerColor = primaryLight),
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -54,7 +60,16 @@ fun DispatchScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         // SECCIÓN 1: Unidad Activa
-        ActiveUnitSection()
+        uiState.activeBus?.let { activeBus ->
+            ActiveUnitSection(
+                bus = activeBus,
+                passengers = uiState.currentPassengers,
+                maxPassengers = uiState.maxPassengers,
+                timeRemaining = uiState.timeRemaining,
+                onAddPassenger = onAddPassenger,
+                onFinishLoading = onFinishLoading
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -68,16 +83,16 @@ fun DispatchScreen() {
         )
 
         // LISTA DE SIGUIENTES UNIDADES
-        NextUnitCard(unitNumber = "#41", driverName = "Carlos Castro")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        NextUnitCard(unitNumber = "#11", driverName = "Sergio Perez")
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(uiState.nextBuses) { bus ->
+                NextUnitCard(
+                    bus = bus,
+                    onSkip = { onSkipUnit(bus) }
+                )
+            }
+        }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DispatchScreenPreview() {
-    DispatchScreen()
 }

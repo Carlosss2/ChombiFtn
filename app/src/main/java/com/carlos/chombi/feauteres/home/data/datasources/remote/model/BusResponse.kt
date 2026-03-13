@@ -1,4 +1,4 @@
-package com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model
+package com.carlos.chombi.feauteres.home.data.datasources.remote.model
 
 import com.google.gson.annotations.SerializedName
 
