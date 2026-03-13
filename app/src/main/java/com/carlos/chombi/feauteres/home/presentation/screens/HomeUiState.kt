@@ -8,7 +8,7 @@ data class HomeUiState(
     val nextBuses: List<Bus> = emptyList(),
     val currentPassengers: Int = 0,
     val maxPassengers: Int = 14,
-    val timeRemaining: String = "05:00",
+    val timeRemaining: String = "01:00",
     val isLoading: Boolean = false,
     val error: String? = null
 )

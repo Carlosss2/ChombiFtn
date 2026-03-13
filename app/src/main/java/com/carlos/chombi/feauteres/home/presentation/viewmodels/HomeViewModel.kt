@@ -3,6 +3,7 @@ package com.carlos.chombi.feauteres.home.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carlos.chombi.core.navigation.AppNavigator
+import com.carlos.chombi.core.hardware.domain.VibratorManager
 import com.carlos.chombi.feauteres.home.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.navigation.BusRoutes
 import com.carlos.chombi.feauteres.history.navigation.HistoryRoutes
@@ -21,22 +22,22 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val navigator: AppNavigator,
-    private val getAllBusesUseCase: GetAllBusesUseCase
+    private val getAllBusesUseCase: GetAllBusesUseCase,
+    private val vibratorManager: VibratorManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
     private var timerJob: Job? = null
-    private var secondsRemaining = 300 // 5 minutos = 300 segundos
 
-    // Llama a la API, ordena por turno e inicia el día
+    private var secondsRemaining = 120
+
     fun startDay() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             getAllBusesUseCase()
                 .onSuccess { buses ->
-                    // Ordenar unidades por su turno (shift) de menor a mayor
                     val sortedBuses = buses.sortedBy { it.shift.toIntOrNull() ?: Int.MAX_VALUE }
                     if (sortedBuses.isNotEmpty()) {
                         _uiState.update {
@@ -61,7 +62,7 @@ class HomeViewModel @Inject constructor(
 
     private fun startTimer() {
         timerJob?.cancel()
-        secondsRemaining = 300 // Reiniciar a 5 minutos
+        secondsRemaining = 120
         updateTimerUI()
 
         timerJob = viewModelScope.launch {
@@ -70,8 +71,12 @@ class HomeViewModel @Inject constructor(
                 secondsRemaining--
                 updateTimerUI()
             }
-            // Si el temporizador llega a 0, cambiamos de unidad automáticamente
-            nextUnit()
+
+            // llego a 0! Inicia vibración de 5 segundos
+            vibratorManager.vibrate(5000L)
+
+
+            nextUnit(isManualSkip = false)
         }
     }
 
@@ -88,30 +93,35 @@ class HomeViewModel @Inject constructor(
             val newCount = currentState.currentPassengers + 1
             _uiState.update { it.copy(currentPassengers = newCount) }
 
-            // Si se llenó la combi, pasar a la siguiente
             if (newCount >= currentState.maxPassengers) {
-                nextUnit()
+                //
+                nextUnit(isManualSkip = true)
             }
         }
     }
 
     fun finishLoading() {
-        // El chofer decide irse antes
-        nextUnit()
+        // El chofer se va antes, pasa a la siguiente unidad (apaga vibración)
+        nextUnit(isManualSkip = true)
     }
 
     fun skipUnit(busToSkip: Bus) {
         val currentState = _uiState.value
         val currentNextBuses = currentState.nextBuses.toMutableList()
 
-        // Removemos la unidad seleccionada y la mandamos al final de la cola
         currentNextBuses.remove(busToSkip)
         currentNextBuses.add(busToSkip)
 
         _uiState.update { it.copy(nextBuses = currentNextBuses) }
     }
 
-    private fun nextUnit() {
+
+    private fun nextUnit(isManualSkip: Boolean = false) {
+
+        if (isManualSkip) {
+            vibratorManager.stop()
+        }
+
         val currentState = _uiState.value
         val currentActive = currentState.activeBus
 
@@ -119,7 +129,6 @@ class HomeViewModel @Inject constructor(
             val newActive = currentState.nextBuses.first()
             val newNextBuses = currentState.nextBuses.drop(1).toMutableList()
 
-            // El que estaba activo pasa al final de la cola
             newNextBuses.add(currentActive)
 
             _uiState.update {
@@ -129,9 +138,8 @@ class HomeViewModel @Inject constructor(
                     currentPassengers = 0
                 )
             }
-            startTimer() // Reiniciar reloj para la nueva unidad
+            startTimer()
         } else {
-            // Solo hay 1 unidad registrada, solo reiniciamos la cuenta
             _uiState.update { it.copy(currentPassengers = 0) }
             startTimer()
         }
@@ -139,10 +147,10 @@ class HomeViewModel @Inject constructor(
 
     fun endDay() {
         timerJob?.cancel()
-        _uiState.update { HomeUiState() } // Reinicia todo el estado
+        vibratorManager.stop() // Detenemos la vibración si cerramos el día
+        _uiState.update { HomeUiState() }
     }
 
-    // Funciones de navegación intactas
     fun goHome() { navigator.navigate(HomeRoutes.HOME_GRAPH) }
     fun goToAddBus() { navigator.navigate(BusRoutes.BUS_GRAPH) }
     fun goToHistory() { navigator.navigate(HistoryRoutes.HISTORY_GRAPH) }
