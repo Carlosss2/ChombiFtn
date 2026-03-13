@@ -1,5 +1,6 @@
 package com.carlos.chombi.feauteres.authentication.domain.usecases
 
+import android.util.Log
 import com.carlos.chombi.feauteres.authentication.domain.entities.User
 import com.carlos.chombi.feauteres.authentication.domain.repositories.AuthRepository
 import javax.inject.Inject
@@ -18,7 +19,7 @@ class AuthUserUseCase @Inject constructor(
             Result.success(user)
 
         } catch (e: Exception) {
-
+            Log.e("AuthError", "Error real al iniciar sesión: ${e.message}", e)
             Result.failure(e)
         }
     }

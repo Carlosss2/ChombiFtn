@@ -6,27 +6,37 @@ import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.B
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ChombiApi {
 
-    @POST("login")
+    @POST("auth/login")
     suspend fun loginUser(
         @Body credentials: LoginRequestDto // ENVIAMOS email y pass
     ): AuthResponse // RECIBIMOS usuario + token
 
-    @POST("register")
+    @POST("auth/register")
     suspend fun registerUser(
         @Body userData: UserRegisterDto // ENVIAMOS datos completos
     ): retrofit2.Response<AuthResponse>
 
     @GET("vehicles")
     suspend fun getAllBuses(): BusResponse
-
+    @Multipart
     @POST("vehicles")
-    suspend fun addBus(@Body bus: BusDto)
+    suspend fun addBus(
+        @Part("driver_name") driverName: okhttp3.RequestBody,
+        @Part("license_plate") licensePlate: okhttp3.RequestBody,
+        @Part("unit_number") unitNumber: okhttp3.RequestBody,
+        @Part("model") model: okhttp3.RequestBody,
+        @Part("shift") shift: okhttp3.RequestBody,
+        @Part("is_working") isWorking: okhttp3.RequestBody,
+        @Part image: okhttp3.MultipartBody.Part
+    )
 
     @PUT("vehicles/{id}")
     suspend fun updateBus(

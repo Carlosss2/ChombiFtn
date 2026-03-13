@@ -1,18 +1,16 @@
 package com.carlos.chombi.core.di
 
-
 import android.content.Context
 import com.carlos.chombi.BuildConfig
-import com.carlos.chombi.core.network.AuthInterceptor
-import com.carlos.chombi.core.network.ChombiApi
 import com.carlos.chombi.core.session.SessionManager
 import com.carlos.chombi.core.session.TokenDataStore
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,13 +32,23 @@ object NetworkModule {
         return SessionManager(tokenDataStore)
     }
 
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .build()
+    fun provideOkHttpClient(tokenDataStore: TokenDataStore): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
+            val token = runBlocking { tokenDataStore.getToken() }
+
+            val requestBuilder = chain.request().newBuilder()
+
+            if (!token.isNullOrBlank()) {
+                requestBuilder.addHeader("Authorization", "Bearer $token")
+            }
+
+            chain.proceed(requestBuilder.build())
+        }).build()
     }
+
 
     @Provides
     @Singleton
@@ -50,11 +58,5 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideSharedUpApi(retrofit: Retrofit): ChombiApi {
-        return retrofit.create(ChombiApi::class.java)
     }
 }
