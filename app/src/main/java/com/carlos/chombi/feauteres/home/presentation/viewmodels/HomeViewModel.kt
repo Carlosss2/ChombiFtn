@@ -6,6 +6,7 @@ import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.core.hardware.domain.VibratorManager
 import com.carlos.chombi.feauteres.home.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.navigation.BusRoutes
+import com.carlos.chombi.feauteres.history.domain.usecases.AddBusHistoryUseCase
 import com.carlos.chombi.feauteres.history.navigation.HistoryRoutes
 import com.carlos.chombi.feauteres.home.domain.usecases.GetAllBusesUseCase
 import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val navigator: AppNavigator,
     private val getAllBusesUseCase: GetAllBusesUseCase,
-    private val vibratorManager: VibratorManager
+    private val vibratorManager: VibratorManager,
+    private val addBusHistoryUseCase: AddBusHistoryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -146,6 +148,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun endDay() {
+        viewModelScope.launch {
+            addBusHistoryUseCase()
+        }
         timerJob?.cancel()
         vibratorManager.stop() // Detenemos la vibración si cerramos el día
         _uiState.update { HomeUiState() }

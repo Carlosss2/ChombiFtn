@@ -18,5 +18,14 @@ class BusHistoryRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+    override suspend fun addBusHistory(): Result<Unit>{
+        return try {
+            api.addBusHistory()
+            Result.success(Unit)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+
+    }
 
 }

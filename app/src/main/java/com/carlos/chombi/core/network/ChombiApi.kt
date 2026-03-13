@@ -41,6 +41,9 @@ interface ChombiApi {
     @GET("vehicles/history")
     suspend fun getBusHistory(): BusHistoryResponse
 
+    @POST("vehicles/history")
+    suspend fun addBusHistory() :Unit
+
 
     @PUT("vehicles/{id}")
     suspend fun updateBus(
