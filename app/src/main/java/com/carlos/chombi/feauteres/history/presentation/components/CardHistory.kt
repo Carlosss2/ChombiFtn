@@ -22,28 +22,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Importando tus colores exactos
+// Importando tus colores del tema
 import com.carlos.chombi.core.ui.theme.primaryLight
 import com.carlos.chombi.core.ui.theme.surfaceContainerLowestLight
 import com.carlos.chombi.core.ui.theme.onSurfaceLight
 import com.carlos.chombi.core.ui.theme.outlineVariantLight
 import com.carlos.chombi.core.ui.theme.onSurfaceVariantLight
 import com.carlos.chombi.core.ui.theme.surfaceVariantLight
+import com.carlos.chombi.feauteres.history.domain.entities.BusHistory
 
 @Composable
-fun CardHistory() {
-    // Estado para controlar la expansión
+fun CardHistory(
+    bus: BusHistory,
+    modifier: Modifier = Modifier
+) {
+    // Estado para controlar la expansión local de cada tarjeta
     var expanded by remember { mutableStateOf(false) }
 
-    // Animación de la flecha
+    // Animación de la flecha (0 a 180 grados)
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "Arrow Rotation"
     )
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth() // Asegura que tome todo el ancho disponible
+        modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(16.dp))
             .clickable { expanded = !expanded }
@@ -63,7 +67,7 @@ fun CardHistory() {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // --- ENCABEZADO (Visible siempre) ---
+            // --- ENCABEZADO (Siempre visible) ---
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -78,7 +82,7 @@ fun CardHistory() {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = "Miércoles 12 de Marzo", // Texto estático
+                    text = bus.date,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = onSurfaceLight,
@@ -102,13 +106,12 @@ fun CardHistory() {
                 )
             }
 
-            // --- CONTENIDO DESPLEGABLE ---
+            // --- CONTENIDO DESPLEGABLE (Detalles del viaje) ---
             if (expanded) {
                 Spacer(modifier = Modifier.height(12.dp))
                 HorizontalDivider(color = outlineVariantLight, thickness = 1.dp)
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // --- VEHÍCULO 1 ---
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -122,60 +125,25 @@ fun CardHistory() {
                         tint = onSurfaceVariantLight,
                         modifier = Modifier.size(24.dp)
                     )
+
                     Spacer(modifier = Modifier.width(12.dp))
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Combi Unidad 01",
+                            text = "Placa: ${bus.licensePlate}",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = onSurfaceLight
                         )
                         Text(
-                            text = "Turno: 06:00 AM - 02:00 PM",
+                            text = "Turno: ${bus.shift}",
                             fontSize = 12.sp,
                             color = onSurfaceVariantLight
                         )
                     }
-                    Text(
-                        text = "Carlos",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = primaryLight
-                    )
-                }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // --- VEHÍCULO 2 ---
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = surfaceVariantLight, shape = RoundedCornerShape(8.dp))
-                        .padding(12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.DirectionsCar,
-                        contentDescription = null,
-                        tint = onSurfaceVariantLight,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Taxi Unidad 14",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = onSurfaceLight
-                        )
-                        Text(
-                            text = "Turno: 02:00 PM - 10:00 PM",
-                            fontSize = 12.sp,
-                            color = onSurfaceVariantLight
-                        )
-                    }
                     Text(
-                        text = "Juan",
+                        text = bus.driverName,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = primaryLight

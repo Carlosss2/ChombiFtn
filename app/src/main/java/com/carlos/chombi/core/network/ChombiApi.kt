@@ -3,6 +3,7 @@ package com.carlos.chombi.core.network
 import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.*
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusDto
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusResponse
+import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -37,6 +38,12 @@ interface ChombiApi {
         @Part("is_working") isWorking: okhttp3.RequestBody,
         @Part image: okhttp3.MultipartBody.Part
     )
+    @GET("vehicles/history")
+    suspend fun getBusHistory(): BusHistoryResponse
+
+    @POST("vehicles/history")
+    suspend fun addBusHistory() :Unit
+
 
     @PUT("vehicles/{id}")
     suspend fun updateBus(
