@@ -1,9 +1,10 @@
 package com.carlos.chombi.feauteres.busManagement.presentation.components
 
 import android.Manifest
+import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,7 +13,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +44,9 @@ fun AddBusDialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF337060))
         ) {
@@ -66,9 +72,28 @@ fun AddBusDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // AQUÍ ESTÁ EL CAMBIO: Muestra la foto si ya se tomó una
+                if (currentPhoto != null) {
+                    val bitmap = BitmapFactory.decodeFile(currentPhoto.absolutePath)
+                    if (bitmap != null) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "Fotografía capturada",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(160.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop // Recorta la imagen para que llene el espacio sin deformarse
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+
                 Button(
                     onClick = { cameraPermissionLauncher.launch(Manifest.permission.CAMERA) },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (currentPhoto == null) Color(0xFFD9D9D9) else Color(0xFF81C784),
@@ -76,7 +101,8 @@ fun AddBusDialog(
                     )
                 ) {
                     Text(
-                        text = if (currentPhoto == null) "Tomar fotografía de unidad" else "¡Fotografía capturada!",
+                        // Cambiamos el texto dinámicamente según si ya hay foto o no
+                        text = if (currentPhoto == null) "Tomar fotografía de unidad" else "Volver a tomar fotografía",
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -101,7 +127,9 @@ fun AddBusDialog(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A819E))
                 ) {

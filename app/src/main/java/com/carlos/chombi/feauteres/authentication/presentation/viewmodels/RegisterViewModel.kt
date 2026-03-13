@@ -47,7 +47,7 @@ class RegisterViewModel @Inject constructor(
         val currentState = _uiState.value
 
         val roleId = when (currentState.role) {
-            "Checador" -> "46defe78-1d69-11f1-b7f4-16ffec603d6d"
+            "Checador" -> "d1ae5d83-1e7e-11f1-a632-16ffec603d6d"
             "Conductor" -> "UUID_DEL_CONDUCTOR"
             else -> ""
         }

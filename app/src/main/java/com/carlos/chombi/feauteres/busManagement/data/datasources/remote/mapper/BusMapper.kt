@@ -9,7 +9,7 @@ fun BusDto.toDomain(): Bus {
         licencePlate = licencePlate,
         driver = driver,
         unitNumber = unitNumber,
-        shift = shift,
+        shift = shift.toString(), // Lo pasamos a String para tu UI
         isWorking = isWorking,
         model = model,
         imageUrl = imageUrl
@@ -22,7 +22,7 @@ fun Bus.toDto(): BusDto {
         licencePlate = licencePlate,
         driver = driver,
         unitNumber = unitNumber,
-        shift = shift,
+        shift = shift.toIntOrNull() ?: 1, // Lo regresamos a Int para la API
         isWorking = isWorking,
         model = model,
         imageUrl = imageUrl
