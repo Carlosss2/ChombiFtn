@@ -160,10 +160,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Importante: Para que la próxima vez pida "Iniciar Día",
-     * debemos borrar los buses de Room.
-     */
     fun endDay() {
         viewModelScope.launch {
             addBusHistoryUseCase()
@@ -177,7 +173,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Navegación
     fun goHome() { navigator.navigate(HomeRoutes.HOME_GRAPH) }
     fun goToAddBus() { navigator.navigate(BusRoutes.BUS_GRAPH) }
     fun goToHistory() { navigator.navigate(HistoryRoutes.HISTORY_GRAPH) }
