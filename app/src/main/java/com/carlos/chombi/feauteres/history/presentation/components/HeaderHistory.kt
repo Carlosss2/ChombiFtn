@@ -2,35 +2,34 @@ package com.carlos.chombi.feauteres.history.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.carlos.chombi.R
 import com.carlos.chombi.core.ui.theme.primaryLight
-import com.carlos.chombi.feauteres.home.presentation.components.HeaderHome
 
 @Composable
-fun HeaderHistory() {
+fun HeaderHistory(
+    onSearchClick: (String) -> Unit = {}
+) {
+    var searchQuery by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -42,9 +41,7 @@ fun HeaderHistory() {
             )
             .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
-
         Column {
-
             Text(
                 text = "Chombi",
                 fontSize = 34.sp,
@@ -54,11 +51,7 @@ fun HeaderHistory() {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(
                     modifier = Modifier
                         .weight(1f)
@@ -66,14 +59,12 @@ fun HeaderHistory() {
                         .shadow(10.dp, RoundedCornerShape(30.dp)),
                     shape = RoundedCornerShape(30.dp)
                 ) {
-
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Image(
                             painter = painterResource(R.drawable.search),
                             contentDescription = null,
@@ -82,25 +73,37 @@ fun HeaderHistory() {
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Text(
-                            text = "Buscar por fecha",
-                            color = Color.Black,
-                            fontSize = 15.sp
+                        BasicTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Search
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+                                    if (searchQuery.isNotEmpty()) {
+                                        onSearchClick(searchQuery)
+                                    }
+                                }
+                            ),
+                            modifier = Modifier.fillMaxWidth(),
+                            decorationBox = { innerTextField ->
+                                if (searchQuery.isEmpty()) {
+                                    Text(
+                                        text = "Buscar por fecha (YYYY-MM-DD)",
+                                        color = Color.Gray,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                innerTextField()
+                            }
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.width(14.dp))
-
             }
         }
-
-
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PrevewHeaderHistory(){
-    HeaderHistory()
 }

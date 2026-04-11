@@ -1,15 +1,12 @@
 package com.carlos.chombi.feauteres.history.presentation.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -23,8 +20,6 @@ import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.feauteres.history.presentation.components.CardHistory
 import com.carlos.chombi.feauteres.history.presentation.components.HeaderHistory
 import com.carlos.chombi.feauteres.history.presentation.viewmodels.HistoryViewModel
-import androidx.compose.foundation.lazy.items
-
 
 @Composable
 fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()){
@@ -34,13 +29,12 @@ fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = onPrimaryLight,
-
         bottomBar = {
             Navbar(
                 onHomeClick = { viewModel.goHome() },
                 onAddClick = { viewModel.goToAddBus() },
                 onHistoryClick = { viewModel.goToHistory() },
-                onReportsClick = {viewModel.goToReports()}
+                onReportsClick = { viewModel.goToReports() }
             )
         }
     ) { innerPadding ->
@@ -50,18 +44,46 @@ fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()){
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            HeaderHistory()
-            Spacer(modifier = Modifier.height(40.dp))
-            Text(
-                text = "Historial",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 16.dp)
+
+            HeaderHistory(
+                onSearchClick = { date -> viewModel.searchHistoryByDate(date) }
             )
-            LazyColumn{
-                items(state.buses){bus ->
-                    CardHistory(bus = bus)
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Historial",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                TextButton(onClick = { viewModel.loadHistoryBuses() }) {
+                    Text("Ver todos", color = MaterialTheme.colorScheme.primary)
+                }
+            }
+
+            // Manejo de estado vacío / error
+            if (state.error != null && state.buses.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    Text(text = "Sin registros para esta fecha", color = Color.Gray, fontSize = 16.sp)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
+                    items(state.buses) { bus ->
+                        CardHistory(bus = bus)
+                    }
                 }
             }
         }

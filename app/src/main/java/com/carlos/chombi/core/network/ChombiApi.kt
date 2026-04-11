@@ -3,6 +3,7 @@ package com.carlos.chombi.core.network
 import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.*
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusDto
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusResponse
+import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryDto
 import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -60,4 +61,9 @@ interface ChombiApi {
     suspend fun getBusByUnitNumber(
         @Path("unitNumber") unitNumber: Int
     ): BusDto
+
+    @GET("vehicles/history/by-date/{date}")
+    suspend fun getBusHistoryByDate(
+        @Path("date") date: String
+    ): List<BusHistoryDto>
 }
