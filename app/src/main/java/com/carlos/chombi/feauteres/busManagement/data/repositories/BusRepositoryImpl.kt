@@ -65,7 +65,7 @@ class BusRepositoryImpl @Inject constructor(
     override suspend fun updateBus(bus: Bus): Result<Unit> {
         return try {
 
-            api.updateBus(id = bus.id.toInt(), bus = bus.toDto())
+            api.updateBus(id = bus.id, bus = bus.toDto())
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -74,9 +74,16 @@ class BusRepositoryImpl @Inject constructor(
 
     override suspend fun deleteBusById(id: String): Result<Unit> {
         return try {
-            // Ajustar en la API si ahora recibe String
-            api.deleteBus(id.toIntOrNull() ?: 0)
+            api.deleteBus(id)
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    override suspend fun getBusByUnitNumber(unitNumber: Int): Result<Bus> {
+        return try {
+            val response = api.getBusByUnitNumber(unitNumber)
+            Result.success(response.toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }

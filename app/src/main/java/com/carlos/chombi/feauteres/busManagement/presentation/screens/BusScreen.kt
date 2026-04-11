@@ -44,14 +44,19 @@ fun BusScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Encabezado fijo en la parte superior
-            HeaderBus(onAddClick = { viewModel.openAddDialog() })
+
+            HeaderBus(
+                onAddClick = { viewModel.openAddDialog() },
+                onSearchClick = { unit -> viewModel.searchBusByUnit(unit) }
+            )
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Título fijo
+            // Título fijo y botón para recargar
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp), // Aplicamos padding al Row
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -59,36 +64,46 @@ fun BusScreen(
                     text = "Unidades registradas",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = 16.dp)
+                    color = Color.Black
                 )
+
+                TextButton(onClick = { viewModel.loadBuses() }) {
+                    Text("Ver todas", color = MaterialTheme.colorScheme.primary)
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // LAZYCOLUMN: Solo esta parte hará scroll
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f), // Toma el espacio restante en la pantalla
-                contentPadding = PaddingValues(bottom = 16.dp) // Espaciado al final de la lista
-            ) {
-                items(uiState.buses) { bus ->
-                    CardBus(
-                        unidad = bus.unitNumber.toString(),
-                        chofer = bus.driver,
-                        placa = bus.licencePlate,
-                        modelo = bus.model,
-                        imageUrl = bus.imageUrl,
-                        onEditClick = {
-                            viewModel.selectBus(bus)
-                            viewModel.openEditDialog()
-                        },
-                        onDeleteClick = {
-                            viewModel.selectBus(bus)
-                            viewModel.openDeleteDialog()
-                        }
-                    )
+
+            if (uiState.error != null && uiState.buses.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    Text(text = "Unidad no encontrada", color = Color.Gray, fontSize = 16.sp)
+                }
+            } else {
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
+                    items(uiState.buses) { bus ->
+                        CardBus(
+                            unidad = bus.unitNumber.toString(),
+                            chofer = bus.driver,
+                            placa = bus.licencePlate,
+                            modelo = bus.model,
+                            imageUrl = bus.imageUrl,
+                            onEditClick = {
+                                viewModel.selectBus(bus)
+                                viewModel.openEditDialog()
+                            },
+                            onDeleteClick = {
+                                viewModel.selectBus(bus)
+                                viewModel.openDeleteDialog()
+                            }
+                        )
+                    }
                 }
             }
         }

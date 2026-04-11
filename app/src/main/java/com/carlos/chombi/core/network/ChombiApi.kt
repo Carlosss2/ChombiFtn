@@ -47,10 +47,17 @@ interface ChombiApi {
 
     @PUT("vehicles/{id}")
     suspend fun updateBus(
-        @Path("id") id: Int,
+        @Path("id") id: String,
         @Body bus: BusDto
     )
 
     @DELETE("vehicles/{id}")
-    suspend fun deleteBus(@Path("id") id: Int)
+    suspend fun deleteBus(
+        @Path("id") id: String
+    )
+
+    @GET("vehicles/by-unit/{unitNumber}")
+    suspend fun getBusByUnitNumber(
+        @Path("unitNumber") unitNumber: Int
+    ): BusDto
 }

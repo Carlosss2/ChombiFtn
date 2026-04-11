@@ -14,16 +14,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,8 +42,12 @@ import com.carlos.chombi.core.ui.theme.primaryLight
 
 @Composable
 fun HeaderBus(
-    onAddClick: () -> Unit = {} // <-- Añadimos este parámetro
+    onAddClick: () -> Unit = {},
+    onSearchClick: (Int) -> Unit = {}
 ) {
+    // Estado para guardar lo que escribe el usuario
+    var searchQuery by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -79,10 +93,41 @@ fun HeaderBus(
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Text(
-                            text = "Buscar unidad",
-                            color = Color.Black,
-                            fontSize = 15.sp
+
+                        BasicTextField(
+                            value = searchQuery,
+                            onValueChange = { newValue ->
+
+                                if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                    searchQuery = newValue
+                                }
+                            },
+                            textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number, // Muestra el teclado numérico
+                                imeAction = ImeAction.Search // Cambia el botón "Enter" por "Buscar"
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+
+                                    searchQuery.toIntOrNull()?.let { unitNumber ->
+                                        onSearchClick(unitNumber)
+                                    }
+                                }
+                            ),
+                            modifier = Modifier.fillMaxWidth(),
+                            decorationBox = { innerTextField ->
+
+                                if (searchQuery.isEmpty()) {
+                                    Text(
+                                        text = "Buscar unidad",
+                                        color = Color.Gray, // Se cambia a gris para que parezca placeholder
+                                        fontSize = 15.sp
+                                    )
+                                }
+                                innerTextField() // Aquí se renderiza el texto real
+                            }
                         )
                     }
                 }
@@ -94,8 +139,8 @@ fun HeaderBus(
                     modifier = Modifier
                         .size(56.dp)
                         .shadow(10.dp, RoundedCornerShape(30.dp))
-                        .clip(RoundedCornerShape(30.dp)) // Asegura que el efecto ripple (onda) respete los bordes curvos
-                        .clickable { onAddClick() }, // <-- AQUÍ VA LA ACCIÓN DEL CLIC
+                        .clip(RoundedCornerShape(30.dp))
+                        .clickable { onAddClick() },
                     shape = RoundedCornerShape(30.dp)
                 ) {
                     Box(

@@ -25,6 +25,7 @@ class BusViewModel @Inject constructor(
     private val addBusUseCase: AddBusUseCase,
     private val updateBusUseCase: UpdateBusUseCase,
     private val deleteBusUseCase: DeleteBusUseCase,
+    private val getBusByUnitNumberUseCase: GetBusByUnitNumberUseCase,
     private val navigator: AppNavigator,
     private val cameraManager: CameraManager
 ) : ViewModel() {
@@ -32,7 +33,6 @@ class BusViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BusUiState())
     val uiState: StateFlow<BusUiState> = _uiState
 
-    // Estado para la foto actual
     private val _currentPhoto = MutableStateFlow<File?>(null)
     val currentPhoto: StateFlow<File?> = _currentPhoto
 
@@ -49,6 +49,21 @@ class BusViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, error = error.message) }
+                }
+        }
+    }
+
+    fun searchBusByUnit(unitNumber: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            getBusByUnitNumberUseCase(unitNumber)
+                .onSuccess { bus ->
+
+                    _uiState.update { it.copy(buses = listOf(bus), isLoading = false) }
+                }
+                .onFailure { error ->
+                    // Si no se encuentra, dejamos la lista vacía
+                    _uiState.update { it.copy(buses = emptyList(), isLoading = false, error = error.message) }
                 }
         }
     }
@@ -97,7 +112,6 @@ class BusViewModel @Inject constructor(
         }
     }
 
-    // Hardware Cámara
     fun takePhoto() {
         viewModelScope.launch {
             cameraManager.takePhoto()
@@ -123,7 +137,7 @@ class BusViewModel @Inject constructor(
     }
 
     fun closeDialogs() {
-        _currentPhoto.value = null // Limpiar foto
+        _currentPhoto.value = null
         _uiState.update {
             it.copy(
                 showAddDialog = false,
