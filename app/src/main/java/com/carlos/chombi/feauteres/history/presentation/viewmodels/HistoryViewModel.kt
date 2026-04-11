@@ -8,6 +8,7 @@ import com.carlos.chombi.feauteres.history.domain.usecases.GetBusHistoryUseCase
 import com.carlos.chombi.feauteres.history.navigation.HistoryRoutes
 import com.carlos.chombi.feauteres.history.presentation.screens.BusHistoryUiState
 import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
+import com.carlos.chombi.feauteres.reports.navigation.ReportsRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,5 +49,9 @@ class HistoryViewModel @Inject constructor(
 
     fun goToHistory() {
         navigator.navigate(HistoryRoutes.HISTORY_GRAPH)
+    }
+
+    fun goToReports(){
+        navigator.navigate(ReportsRoutes.REPORTS_GRAPH)
     }
 }

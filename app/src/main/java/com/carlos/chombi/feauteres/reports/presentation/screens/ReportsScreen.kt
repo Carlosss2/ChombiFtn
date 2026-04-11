@@ -19,9 +19,10 @@ import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.onPrimaryLight
 import com.carlos.chombi.feauteres.history.presentation.viewmodels.HistoryViewModel
 import com.carlos.chombi.feauteres.reports.presentation.components.HeaderReport
+import com.carlos.chombi.feauteres.reports.presentation.viewmodels.ReportViewModel
 
 @Composable
-fun ReportsScreen(viewModel: HistoryViewModel = hiltViewModel()){
+fun ReportsScreen(viewModel: ReportViewModel = hiltViewModel()){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = onPrimaryLight,
@@ -30,7 +31,8 @@ fun ReportsScreen(viewModel: HistoryViewModel = hiltViewModel()){
             Navbar(
                 onHomeClick = { viewModel.goHome() },
                 onAddClick = { viewModel.goToAddBus() },
-                onHistoryClick = { viewModel.goToHistory() }
+                onHistoryClick = { viewModel.goToHistory() },
+                onReportsClick = {viewModel.goToReports()}
             )
         }
     ) { innerPadding ->

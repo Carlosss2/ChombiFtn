@@ -39,7 +39,8 @@ fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()){
             Navbar(
                 onHomeClick = { viewModel.goHome() },
                 onAddClick = { viewModel.goToAddBus() },
-                onHistoryClick = { viewModel.goToHistory() }
+                onHistoryClick = { viewModel.goToHistory() },
+                onReportsClick = {viewModel.goToReports()}
             )
         }
     ) { innerPadding ->
