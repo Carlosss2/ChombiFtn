@@ -57,42 +57,6 @@ fun HeaderReport(){
             ) {
 
 
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
-                        .shadow(10.dp, RoundedCornerShape(30.dp)),
-                    shape = RoundedCornerShape(30.dp)
-                ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Image(
-                            painter = painterResource(R.drawable.search),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Text(
-                            text = "Buscar por fecha",
-                            color = Color.Black,
-                            fontSize = 15.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(14.dp))
 
             }
-        }
-
-
-    }
-}
+        }}}

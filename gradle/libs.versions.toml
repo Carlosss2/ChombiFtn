@@ -26,6 +26,8 @@ ui = "1.10.1"
 datastore = "1.1.1"
 biometric = "1.2.0-alpha05"
 room = "2.8.4"
+workRuntimeKtx = "2.9.0"
+hiltWork = "1.2.0"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -69,6 +71,10 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+#workmanafer
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWork" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

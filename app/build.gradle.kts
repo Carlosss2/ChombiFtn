@@ -107,4 +107,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.android)
     implementation(libs.androidx.biometric)
+
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler) // Para que Hilt pueda inyectar en WorkManager
 }
