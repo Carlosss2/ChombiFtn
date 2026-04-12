@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.carlos.chombi.core.shared.components.Navbar
 import com.carlos.chombi.core.ui.theme.onPrimaryLight
-import com.carlos.chombi.feauteres.history.presentation.viewmodels.HistoryViewModel
 import com.carlos.chombi.feauteres.reports.presentation.components.HeaderReport
 import com.carlos.chombi.feauteres.reports.presentation.viewmodels.ReportViewModel
 
