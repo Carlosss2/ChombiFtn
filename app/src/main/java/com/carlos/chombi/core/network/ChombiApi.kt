@@ -5,6 +5,7 @@ import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.B
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusResponse
 import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryDto
 import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryResponse
+import com.carlos.chombi.feauteres.reports.data.datasources.remote.models.PdfUrlsResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -72,4 +73,7 @@ interface ChombiApi {
     suspend fun uploadPdf(
         @Part pdf: okhttp3.MultipartBody.Part
     )
+
+    @GET("vehicles/pdf-urls")
+    suspend fun getPdfUrls(): PdfUrlsResponse
 }

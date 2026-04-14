@@ -1,12 +1,11 @@
 package com.carlos.chombi.feauteres.reports.presentation.screens
 
 enum class UploadStatus {
-    IDLE,       // Esperando
-    UPLOADING,  // Subiendo (Mostrar progress de carga)
-    SUCCESS,    // Éxito (Mostrar alerta verde)
-    ERROR       // Error (Mostrar alerta roja)
+    IDLE, UPLOADING, SUCCESS, ERROR
 }
 
 data class ReportsUiState(
-    val uploadStatus: UploadStatus = UploadStatus.IDLE
+    val uploadStatus: UploadStatus = UploadStatus.IDLE,
+    val pdfUrls: List<String> = emptyList(),
+    val isLoadingPdfs: Boolean = false
 )

@@ -33,7 +33,7 @@ fun HeaderReport(){
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
+            .height(200.dp)
             .background(
                 primaryLight,
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)

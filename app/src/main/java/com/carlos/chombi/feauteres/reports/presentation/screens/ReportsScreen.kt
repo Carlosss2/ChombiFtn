@@ -6,10 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -36,6 +41,7 @@ import com.carlos.chombi.feauteres.reports.presentation.viewmodels.ReportViewMod
 fun ReportsScreen(viewModel: ReportViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uriHandler = LocalUriHandler.current // Manejador para abrir las URLs en el navegador
 
     val pdfPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -83,7 +89,7 @@ fun ReportsScreen(viewModel: ReportViewModel = hiltViewModel()) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            //
+            // Box de subida original (respetando tu diseño)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,6 +119,46 @@ fun ReportsScreen(viewModel: ReportViewModel = hiltViewModel()) {
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // --- NUEVA SECCIÓN: LISTA DE PDFS ---
+            Text(
+                text = "Reportes en plataforma",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mostrar el estado de la lista
+            if (uiState.isLoadingPdfs) {
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = primaryLight)
+                }
+            } else if (uiState.pdfUrls.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                    Text(text = "Aún no hay reportes subidos", color = Color.Gray, fontSize = 14.sp)
+                }
+            } else {
+                // Lista de PDFs scrolleable
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f), // Ocupa el espacio restante hasta el BottomBar
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.pdfUrls) { url ->
+                        PdfItemCard(
+                            url = url,
+                            onClick = { uriHandler.openUri(url) } // Al tocar, abre el PDF en el navegador
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -134,6 +180,51 @@ fun ReportsScreen(viewModel: ReportViewModel = hiltViewModel()) {
     }
 }
 
+// NUEVO COMPONENTE: Tarjeta de la lista de PDFs (minimalista)
+@Composable
+fun PdfItemCard(url: String, onClick: () -> Unit) {
+    // Obtenemos un nombre limpio cortando la URL
+    val fileName = url.substringAfterLast("/").substringBefore("?")
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.PictureAsPdf,
+                contentDescription = "PDF Icon",
+                tint = Color(0xFFE53935), // Rojo característico de los PDFs
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = fileName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Toca para abrir",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun StatusDialog(

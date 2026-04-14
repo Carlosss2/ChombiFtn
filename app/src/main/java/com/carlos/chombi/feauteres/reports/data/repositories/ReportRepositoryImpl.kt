@@ -23,5 +23,14 @@ class ReportRepositoryImpl @Inject constructor(
             Log.e("CHOMBI_ERROR", "Error al subir PDF al servidor: ${e.message}", e)
             Result.failure(e)
         }
+
+    }
+    override suspend fun getPdfUrls(): Result<List<String>> {
+        return try {
+            val response = api.getPdfUrls()
+            Result.success(response.pdfUrls)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

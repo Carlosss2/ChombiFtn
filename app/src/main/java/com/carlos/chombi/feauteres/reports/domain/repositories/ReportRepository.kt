@@ -3,4 +3,5 @@ import java.io.File
 
 interface ReportRepository {
     suspend fun uploadPdf(file: File): Result<Unit>
+    suspend fun getPdfUrls(): Result<List<String>>
 }
