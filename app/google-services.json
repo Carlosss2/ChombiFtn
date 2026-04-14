@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "195383555487",
+    "project_id": "chombinotifications",
+    "storage_bucket": "chombinotifications.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195383555487:android:617d56e7b1ac98a8ba79aa",
+        "android_client_info": {
+          "package_name": "com.carlos.chombi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRTkAN9XasFVaABsPmCx2N5L62qEeVFd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

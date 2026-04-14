@@ -26,6 +26,8 @@ ui = "1.10.1"
 datastore = "1.1.1"
 biometric = "1.2.0-alpha05"
 room = "2.8.4"
+firebaseBom = "33.9.0"
+googleServices = "4.4.2"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -70,6 +72,10 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
@@ -77,3 +83,4 @@ secrets-gradle = { id = "com.google.android.libraries.mapsplatform.secrets-gradl
 jetbrainsKotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }  # Plugin de Hilt
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }          # Plugin de KSP (recomendado sobre kapt)
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

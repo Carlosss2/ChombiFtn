@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carlos.chombi.core.navigation.AppNavigator
 import com.carlos.chombi.core.hardware.domain.VibratorManager
+import com.carlos.chombi.core.notification.domain.NotificationService
 import com.carlos.chombi.feauteres.home.domain.entities.Bus
 import com.carlos.chombi.feauteres.busManagement.navigation.BusRoutes
 import com.carlos.chombi.feauteres.history.domain.usecases.AddBusHistoryUseCase
@@ -13,6 +14,7 @@ import com.carlos.chombi.feauteres.home.domain.usecases.SyncBusesUseCase
 import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
 import com.carlos.chombi.feauteres.home.presentation.screens.HomeUiState
 import com.carlos.chombi.feauteres.reports.navigation.ReportsRoutes
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +33,7 @@ class HomeViewModel @Inject constructor(
     private val syncBusesUseCase: SyncBusesUseCase,
     private val vibratorManager: VibratorManager,
     private val addBusHistoryUseCase: AddBusHistoryUseCase,
+    private val notificationService: NotificationService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -40,6 +44,14 @@ class HomeViewModel @Inject constructor(
 
     init {
         observeBuses()
+    }
+
+    suspend fun obtainDevicePushToken(): String? {
+        return try {
+            FirebaseMessaging.getInstance().token.await()
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun observeBuses() {
@@ -58,12 +70,10 @@ class HomeViewModel @Inject constructor(
                         )
                     }
 
-                    // Si el timer no está corriendo, lo iniciamos (al volver de navegación)
                     if (timerJob == null) {
                         startTimer()
                     }
                 } else {
-                    // Si Room está vacío, mostramos la pantalla de "Iniciar Día"
                     _uiState.update { it.copy(isDayStarted = false, isLoading = false) }
                 }
             }
@@ -75,10 +85,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                // El repositorio hace el fetch y guarda en Room
                 syncBusesUseCase()
-                // No necesitamos actualizar el estado manualmente aquí,
-                // porque observeBuses() detectará el cambio en Room.
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = "Error al conectar: ${e.message}") }
             }
@@ -96,7 +103,6 @@ class HomeViewModel @Inject constructor(
                 secondsRemaining--
                 updateTimerUI()
             }
-            // Llegó a 0! Vibración y cambio de unidad
             vibratorManager.vibrate(5000L)
             nextUnit(isManualSkip = false)
         }
@@ -164,13 +170,16 @@ class HomeViewModel @Inject constructor(
     fun endDay() {
         viewModelScope.launch {
             addBusHistoryUseCase()
-            // Aquí deberías llamar a un UseCase que ejecute busDao.clearAll()
-            // clearBusesUseCase()
+            
+            notificationService.showNotification(
+                title = "Jornada Finalizada",
+                content = "La finalización del día se ha registrado correctamente."
+            )
 
             timerJob?.cancel()
             timerJob = null
             vibratorManager.stop()
-            _uiState.update { HomeUiState() } // Reset de la UI
+            _uiState.update { HomeUiState() }
         }
     }
 
