@@ -3,6 +3,7 @@ package com.carlos.chombi.core.network
 import com.carlos.chombi.feauteres.authentication.data.datasources.remote.model.*
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusDto
 import com.carlos.chombi.feauteres.busManagement.data.datasources.remote.model.BusResponse
+import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryDto
 import com.carlos.chombi.feauteres.history.data.datasources.remote.model.BusHistoryResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -47,10 +48,28 @@ interface ChombiApi {
 
     @PUT("vehicles/{id}")
     suspend fun updateBus(
-        @Path("id") id: Int,
+        @Path("id") id: String,
         @Body bus: BusDto
     )
 
     @DELETE("vehicles/{id}")
-    suspend fun deleteBus(@Path("id") id: Int)
+    suspend fun deleteBus(
+        @Path("id") id: String
+    )
+
+    @GET("vehicles/by-unit/{unitNumber}")
+    suspend fun getBusByUnitNumber(
+        @Path("unitNumber") unitNumber: Int
+    ): BusDto
+
+    @GET("vehicles/history/by-date/{date}")
+    suspend fun getBusHistoryByDate(
+        @Path("date") date: String
+    ): List<BusHistoryDto>
+
+    @Multipart
+    @POST("vehicles/upload-pdf")
+    suspend fun uploadPdf(
+        @Part pdf: okhttp3.MultipartBody.Part
+    )
 }

@@ -12,6 +12,7 @@ import com.carlos.chombi.feauteres.home.domain.usecases.GetBusesUseCase
 import com.carlos.chombi.feauteres.home.domain.usecases.SyncBusesUseCase
 import com.carlos.chombi.feauteres.home.navigation.HomeRoutes
 import com.carlos.chombi.feauteres.home.presentation.screens.HomeUiState
+import com.carlos.chombi.feauteres.reports.navigation.ReportsRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -160,10 +161,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Importante: Para que la próxima vez pida "Iniciar Día",
-     * debemos borrar los buses de Room.
-     */
     fun endDay() {
         viewModelScope.launch {
             addBusHistoryUseCase()
@@ -177,8 +174,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Navegación
     fun goHome() { navigator.navigate(HomeRoutes.HOME_GRAPH) }
     fun goToAddBus() { navigator.navigate(BusRoutes.BUS_GRAPH) }
     fun goToHistory() { navigator.navigate(HistoryRoutes.HISTORY_GRAPH) }
+    fun goToReports(){navigator.navigate(ReportsRoutes.REPORTS_GRAPH)}
 }

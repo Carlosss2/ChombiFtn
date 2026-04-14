@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: AuthUserUseCase,
     private val navigator: AppNavigator,
     private val biometricManager: BiometricManager,
-    private val tokenDataStore: TokenDataStore // <-- INYECTAMOS EL DATASTORE
+    private val tokenDataStore: TokenDataStore //
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())

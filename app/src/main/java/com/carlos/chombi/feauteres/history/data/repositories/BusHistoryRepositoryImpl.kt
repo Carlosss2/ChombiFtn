@@ -28,4 +28,13 @@ class BusHistoryRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getBusHistoryByDate(date: String): Result<List<BusHistory>> {
+        return try {
+            val response = api.getBusHistoryByDate(date)
+            Result.success(response.toDomain()) // Usamos la misma función de mapeo
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

@@ -22,7 +22,8 @@ import com.carlos.chombi.core.ui.theme.primaryLight
 fun Navbar(
     onHomeClick: () -> Unit,
     onAddClick: () -> Unit,
-    onHistoryClick: () -> Unit
+    onHistoryClick: () -> Unit,
+    onReportsClick: () -> Unit
 ) {
 
     Row(
@@ -73,7 +74,8 @@ fun Navbar(
             Icon(
                 painter = painterResource(id = R.drawable.newspaper),
                 contentDescription = "News",
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(30.dp)
+                    .clickable { onReportsClick() },
                 tint = onPrimaryLight
             )
         }
