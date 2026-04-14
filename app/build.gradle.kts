@@ -6,6 +6,7 @@ plugins {
     // Activa Hilt y KSP
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -95,7 +96,9 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler) // <--- Importante usar KSP
 
-
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
