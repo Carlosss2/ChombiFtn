@@ -66,4 +66,10 @@ interface ChombiApi {
     suspend fun getBusHistoryByDate(
         @Path("date") date: String
     ): List<BusHistoryDto>
+
+    @Multipart
+    @POST("vehicles/upload-pdf")
+    suspend fun uploadPdf(
+        @Part pdf: okhttp3.MultipartBody.Part
+    )
 }
